@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/gcs3
+    username: gcs
+    password: gcs
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      connection-test-query: select 1
+      minimum-idle: 5
+      maximum-pool-size: 50
+      data-source-properties:
+        currentSchema: test1
+      auto-commit: false
