@@ -2,9 +2,8 @@ package org.example.entity;
 
 
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.util.ArrayList;
@@ -13,7 +12,9 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@Table
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder(toBuilder = true)
 public class Detail {
 
     @Id
