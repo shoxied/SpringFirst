@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet author="Ilia Ternovoi" id="20240315-MySpring-1-init">
+
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="detail"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="detail">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" primaryKeyName="detail_pk"/>
+            </column>
+            <column name="brand" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="oem" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="text">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="attribute">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" primaryKeyName="attribute_pk"/>
+            </column>
+            <column name="name" type="text">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="value">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" primaryKeyName="value_pk"/>
+            </column>
+            <column name="attribute_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="value" type="text">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="value"
+                                 baseColumnNames="attribute_id"
+                                 constraintName="attribute_id_fk"
+                                 referencedTableName="attribute"
+                                 referencedColumnNames="id"/>
+
+        <createTable tableName="attribute_value">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" primaryKeyName="attributeValue_pk"/>
+            </column>
+            <column name="detail_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="value_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="attribute_value"
+                                 baseColumnNames="detail_id"
+                                 constraintName="detail_id_fk"
+                                 referencedTableName="detail"
+                                 referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="attribute_value"
+                                 baseColumnNames="value_id"
+                                 constraintName="value_id_fk"
+                                 referencedTableName="value"
+                                 referencedColumnNames="id"/>
+
+    </changeSet>
+</databaseChangeLog>

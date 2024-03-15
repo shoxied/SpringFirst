@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet author="Ilia Ternovoi" id="20240315-MySpring-2-attribute-dir">
+
+        <insert tableName="value"><column name="attribute_id" value="1"/><column name="value" value="1"/></insert>
+        <insert tableName="value"><column name="attribute_id" value="1"/><column name="value" value="2"/></insert>
+        <insert tableName="value"><column name="attribute_id" value="1"/><column name="value" value="3"/></insert>
+        <insert tableName="value"><column name="attribute_id" value="2"/><column name="value" value="50"/></insert>
+        <insert tableName="value"><column name="attribute_id" value="2"/><column name="value" value="75"/></insert>
+        <insert tableName="value"><column name="attribute_id" value="2"/><column name="value" value="100"/></insert>
+        <insert tableName="value"><column name="attribute_id" value="3"/><column name="value" value="12"/></insert>
+        <insert tableName="value"><column name="attribute_id" value="4"/><column name="value" value="100"/></insert>
+        <insert tableName="value"><column name="attribute_id" value="4"/><column name="value" value="150"/></insert>
+        <insert tableName="value"><column name="attribute_id" value="4"/><column name="value" value="200"/></insert>
+        <insert tableName="value"><column name="attribute_id" value="5"/><column name="value" value="75"/></insert>
+        <insert tableName="value"><column name="attribute_id" value="5"/><column name="value" value="100"/></insert>
+        <insert tableName="value"><column name="attribute_id" value="5"/><column name="value" value="125"/></insert>
+        <insert tableName="value"><column name="attribute_id" value="6"/><column name="value" value="40"/></insert>
+        <insert tableName="value"><column name="attribute_id" value="6"/><column name="value" value="50"/></insert>
+        <insert tableName="value"><column name="attribute_id" value="6"/><column name="value" value="60"/></insert>
+        <insert tableName="value"><column name="attribute_id" value="7"/><column name="value" value="0.1"/></insert>
+        <insert tableName="value"><column name="attribute_id" value="7"/><column name="value" value="1"/></insert>
+        <insert tableName="value"><column name="attribute_id" value="7"/><column name="value" value="10"/></insert>
+        <insert tableName="value"><column name="attribute_id" value="8"/><column name="value" value="16"/></insert>
+        <insert tableName="value"><column name="attribute_id" value="8"/><column name="value" value="17"/></insert>
+        <insert tableName="value"><column name="attribute_id" value="8"/><column name="value" value="18"/></insert>
+        <insert tableName="value"><column name="attribute_id" value="9"/><column name="value" value="S"/></insert>
+        <insert tableName="value"><column name="attribute_id" value="9"/><column name="value" value="T"/></insert>
+        <insert tableName="value"><column name="attribute_id" value="9"/><column name="value" value="H"/></insert>
+        <insert tableName="value"><column name="attribute_id" value="10"/><column name="value" value="U"/></insert>
+        <insert tableName="value"><column name="attribute_id" value="10"/><column name="value" value="H"/></insert>
+        <insert tableName="value"><column name="attribute_id" value="10"/><column name="value" value="V"/></insert>
+        <insert tableName="value"><column name="attribute_id" value="11"/><column name="value" value="зимняя"/></insert>
+        <insert tableName="value"><column name="attribute_id" value="11"/><column name="value" value="летняя"/></insert>
+        <insert tableName="value"><column name="attribute_id" value="11"/><column name="value" value="всесезонная"/></insert>
+
+    </changeSet>
+</databaseChangeLog>

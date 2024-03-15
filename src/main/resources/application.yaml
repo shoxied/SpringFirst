@@ -12,3 +12,8 @@ spring:
       data-source-properties:
         currentSchema: test1
       auto-commit: false
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-core.xml
+  sql:
+    init:
+      mode: always

@@ -1,0 +1,11 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+                   objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+
+    <include file="db.changelog-20240315-MySpring-1-init.xml" relativeToChangelogFile="true"/>
+    <include file="db.changelog-20240315-MySpring-2-attribute-dir.xml" relativeToChangelogFile="true"/>
+    <include file="db.changelog-20240315-MySpring-3-attribute-dir.xml" relativeToChangelogFile="true"/>
+    <include file="db.changelog-20240315-MySpring-4-value-dir.xml" relativeToChangelogFile="true"/>
+
+</databaseChangeLog>

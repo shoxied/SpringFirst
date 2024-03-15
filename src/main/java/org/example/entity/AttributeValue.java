@@ -11,7 +11,6 @@ import lombok.experimental.SuperBuilder;
 @Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "attribute_value")
 public class AttributeValue {
 
     @Id
