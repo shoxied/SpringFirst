@@ -10,18 +10,18 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/my/rest/details")
+@RequestMapping("api/my/rest")
 @RequiredArgsConstructor
 public class DetailController {
 
     private final DetailRestService detailRestService;
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "details",produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Detail> details(){
         return detailRestService.getDetails();
     }
 
-    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "newDetail",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
     public Detail addDetail(@RequestBody DetailUpdate update){
         return detailRestService.addDetail(update);
     }
