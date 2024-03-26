@@ -3,8 +3,6 @@ package org.example.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import lombok.experimental.SuperBuilder;
-import org.hibernate.annotations.DynamicUpdate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +28,13 @@ public class Detail {
     @Column(nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "detail", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "detail", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<AttributeValue> attributeValues = new ArrayList<>();
+
+    @PrePersist
+    public void preUpdate() {
+        if (attributeValues != null) {
+            attributeValues.forEach(attributeValue -> attributeValue.setDetail(this));
+        }
+    }
 }

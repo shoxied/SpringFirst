@@ -1,0 +1,23 @@
+spring:
+  main:
+    banner-mode: off
+  jpa:
+    open-in-view: true
+    hibernate:
+      ddl-auto: none
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  datasource:
+    initialization-mode: always
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      connection-test-query: select 1
+      minimum-idle: 1
+      maximum-pool-size: 10
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-core.xml
+  flyway:
+    enabled: false
+
+hibernate:
+  cache.use_second_level_cache: true
+  use_query_cache: true

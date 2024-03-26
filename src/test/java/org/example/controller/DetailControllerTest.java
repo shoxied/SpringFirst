@@ -47,7 +47,6 @@ class DetailControllerTest {
 
     @Test
     void getAllDetails() throws Exception{
-
         when(detailRestService.getDetails()).thenReturn(List.of(Detail.builder()
                 .id(0)
                 .brand("brand")

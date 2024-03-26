@@ -1,7 +1,12 @@
 package org.example.dao;
 
+import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
+import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import org.example.entity.AttributeValue;
 import org.example.entity.Detail;
+import org.example.entity.Value;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,28 +18,46 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
+import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(SpringExtension.class)
 @EnableAutoConfiguration
 @ContextConfiguration(classes= DetailRepositoryTest.class)
 @DataJpaTest
+@AutoConfigureEmbeddedDatabase
 @EntityScan(basePackageClasses = {Detail.class})
 @TestExecutionListeners({
         DependencyInjectionTestExecutionListener.class,
         DirtiesContextTestExecutionListener.class,
+        TransactionDbUnitTestExecutionListener.class,
 })
 class DetailRepositoryTest {
 
     @Autowired
+    private ValueRepository valueRepository;
+    @Autowired
     private DetailRepository detailRepository;
 
-    @Autowired
+    @PersistenceContext
     private EntityManager entityManager;
 
     @Test
+    @Transactional
     void save_new_detail(){
-        Detail detail = detailRepository.save(Detail.builder().brand("brand").build());
+        Value value = valueRepository.findById(1).orElseThrow();
+
+        Detail detail = detailRepository.save(Detail.builder().brand("brand").oem("oem").name("name")
+                        .attributeValues(List.of(AttributeValue.builder().value(value).build()))
+                .build());
+
+        entityManager.clear();
+        detail = detailRepository.findById(detail.getId()).orElseThrow();
+
+        assertEquals("oem", detail.getOem());
+        assertEquals("1", detail.getAttributeValues().get(0).getValue().getValue());
     }
 }
