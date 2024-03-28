@@ -3,11 +3,13 @@ package org.example.service;
 import org.example.dao.DetailRepository;
 import org.example.dao.ValueRepository;
 import org.example.dao.ext.DetailUpdate;
+import org.example.entity.Attribute;
 import org.example.entity.AttributeValue;
 import org.example.entity.Detail;
 import org.example.entity.Value;
+import org.example.search.dto.SearchDetailDto;
+import org.example.search.repo.SearchDetailRepo;
 import org.example.service.Impl.DetailRestServiceImpl;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
@@ -30,6 +32,9 @@ public class DetailRestServiceImplTest {
 
     @Mock
     private ValueRepository valueRepository;
+
+    @Mock
+    private SearchDetailRepo searchDetailRepo;
 
     @InjectMocks
     private DetailRestServiceImpl detailRestService;
@@ -74,6 +79,9 @@ public class DetailRestServiceImplTest {
 
         Detail detail = new Detail();
         when(detailRepository.save(any())).thenReturn(detail);
+
+        SearchDetailDto searchDetailDto = new SearchDetailDto();
+        when(searchDetailRepo.save(any())).thenReturn(searchDetailDto);
 
         detailRestService.addDetail(detailUpdate);
 
