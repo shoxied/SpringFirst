@@ -1,6 +1,7 @@
 package org.example.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.example.dao.ext.DetailExt;
 import org.example.dao.ext.DetailUpdate;
 import org.example.entity.Detail;
 import org.example.service.DetailRestService;
@@ -46,21 +47,21 @@ class DetailControllerTest {
         }).build();
     }
 
-//    @Test
-//    void getAllDetails() throws Exception{
-//        when(detailRestService.getDetails(any())).thenReturn(List.of(Detail.builder()
-//                .id(0)
-//                .brand("brand")
-//                .oem("oem")
-//                .name("name")
-//                .build()));
-//        mvc.perform(MockMvcRequestBuilders.get("/api/my/rest/details")
-//                .accept(MediaType.APPLICATION_JSON)
-//                .contentType(MediaType.APPLICATION_JSON_VALUE))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$[0].id", is(0)))
-//                .andExpect(jsonPath("$[0].brand", is("brand")));
-//    }
+    @Test
+    void getAllDetails() throws Exception{
+        when(detailRestService.getDetails(any())).thenReturn(List.of(DetailExt.builder()
+                .id(0)
+                .brand("brand")
+                .oem("oem")
+                .name("name")
+                .build()));
+        mvc.perform(MockMvcRequestBuilders.get("/api/my/rest/details")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id", is(0)))
+                .andExpect(jsonPath("$[0].brand", is("brand")));
+    }
 
     @Test
     void addNewDetail() throws Exception{

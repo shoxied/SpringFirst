@@ -51,8 +51,7 @@ class DetailRepositoryTest {
         Value value = valueRepository.findById(1).orElseThrow();
 
         Detail detail = detailRepository.save(Detail.builder().brand("brand").oem("oem").name("name")
-                        .attributeValues(List.of(AttributeValue.builder().value(value).build()))
-                .build());
+                        .attributeValues(List.of(AttributeValue.builder().value(value).build())).build());
 
         entityManager.clear();
         detail = detailRepository.findById(detail.getId()).orElseThrow();
