@@ -1,35 +1,44 @@
 package org.example.converter;
 
-import org.example.dao.ValueRepository;
-import org.example.entity.AttributeValue;
-import org.example.entity.Detail;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.example.dao.ext.DetailExt;
+import org.example.dao.ext.DetailExtValues;
 import org.example.search.dto.SearchDetailDto;
 import org.example.search.dto.SearchDetailValueDto;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class DetailConverter {
 
-    private ValueRepository valueRepository;
-    public List<Detail> searchDtoToDetail (List<SearchDetailDto> searchDetailDtos){
-
-        List<Detail> detailList = new ArrayList<>();
+    public List<DetailExt> dtoToDetailExt(List<SearchDetailDto> searchDetailDtos){
+        List<DetailExt> result = new ArrayList<>();
 
         for (SearchDetailDto detailDto: searchDetailDtos){
-            List<AttributeValue> values = new ArrayList<>();
-            Detail detail = new Detail();
-            detail.setBrand(detailDto.getBrand());
-            detail.setOem(detailDto.getOem());
-            detail.setName(detailDto.getName());
-            for (SearchDetailValueDto valueDto: detailDto.getAttributes()){
-                AttributeValue attributeValue = new AttributeValue();
-                attributeValue.setDetail(detail);
-                values.add(attributeValue);
+            DetailExt detailExt = new DetailExt();
+            detailExt.setId(detailDto.getId());
+            detailExt.setBrand(detailDto.getBrand());
+            detailExt.setOem(detailDto.getOem());
+            detailExt.setName(detailDto.getName());
+
+            if (detailDto.getAttributes() != null){
+                List<DetailExtValues> detailExtValuesList = new ArrayList<>();
+                for(SearchDetailValueDto valueDto: detailDto.getAttributes()){
+                    DetailExtValues detailExtValues = new DetailExtValues();
+                    detailExtValues.setAttribute_name(valueDto.getAttributeName());
+                    detailExtValues.setValue(valueDto.getValue());
+                    detailExtValuesList.add(detailExtValues);
+                }
+                detailExt.setValues(detailExtValuesList);
             }
-            detail.setAttributeValues(values);
-            detailList.add(detail);
+            result.add(detailExt);
         }
-        return detailList;
+
+        return result;
     }
 }

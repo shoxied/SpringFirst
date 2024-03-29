@@ -85,6 +85,7 @@ public class DetailRestServiceImplTest {
 
         detailRestService.addDetail(detailUpdate);
 
+
         assertEquals("val-10", detail.getAttributeValues().get(0).getValue().getValue());
         assertEquals("val-11", detail.getAttributeValues().get(1).getValue().getValue());
 

@@ -1,9 +1,12 @@
 package org.example.service.Impl;
 
+import co.elastic.clients.elasticsearch._types.aggregations.Aggregation;
+import co.elastic.clients.elasticsearch._types.aggregations.AggregationBuilders;
 import lombok.RequiredArgsConstructor;
 import org.example.converter.DetailConverter;
 import org.example.dao.DetailRepository;
 import org.example.dao.ValueRepository;
+import org.example.dao.ext.DetailExt;
 import org.example.dao.ext.DetailUpdate;
 import org.example.entity.AttributeValue;
 import org.example.entity.Detail;
@@ -12,6 +15,7 @@ import org.example.search.dto.SearchDetailValueDto;
 import org.example.search.repo.SearchDetailRepo;
 import org.example.service.DetailRestService;
 import org.springframework.data.elasticsearch.client.elc.NativeQuery;
+import org.springframework.data.elasticsearch.client.elc.NativeQueryBuilder;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
@@ -32,20 +36,24 @@ public class DetailRestServiceImpl implements DetailRestService {
     private final SearchDetailRepo searchDetailRepo;
     private final ElasticsearchOperations elasticsearchOperations;
 
-
     @Override
-    public List<Detail> getDetails(String name) {
+    public List<DetailExt> getDetails(String name) {
         DetailConverter detailConverter = new DetailConverter();
+        NativeQueryBuilder builder = new NativeQueryBuilder();
+        SearchHits<SearchDetailDto> searchHits;
+        NativeQuery nativeQuery;
+        Aggregation aggregation = AggregationBuilders.terms(ta->ta.field("string_value"));
+
         if (name != null){
-            NativeQuery nativeQuery = NativeQuery.builder().withQuery(q->q.match(m->m.field("name").query(name))).build();
-            SearchHits<SearchDetailDto> searchHits = elasticsearchOperations.search(nativeQuery, SearchDetailDto.class);
-            return detailConverter.searchDtoToDetail(searchHits.getSearchHits().stream().map(SearchHit::getContent).toList());
+            nativeQuery = builder.withQuery(q->q.match(m->m.field("name").query(name)))
+                    .withAggregation("attributes", aggregation).build();
         }
         else {
-            NativeQuery nativeQuery = NativeQuery.builder().withQuery(q->q.bool(b->b)).build();
-            SearchHits<SearchDetailDto> searchHits = elasticsearchOperations.search(nativeQuery, SearchDetailDto.class);
-            return detailConverter.searchDtoToDetail(searchHits.getSearchHits().stream().map(SearchHit::getContent).toList());
+            nativeQuery = builder.withQuery(q->q.bool(b->b)).withAggregation("attributes", aggregation).build();
         }
+
+        searchHits = elasticsearchOperations.search(nativeQuery, SearchDetailDto.class);
+        return detailConverter.dtoToDetailExt(searchHits.getSearchHits().stream().map(SearchHit::getContent).toList());
     }
 
     @Override
