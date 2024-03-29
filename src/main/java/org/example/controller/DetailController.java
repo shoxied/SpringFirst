@@ -1,6 +1,7 @@
 package org.example.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.example.dao.ext.DetailExt;
 import org.example.dao.ext.DetailUpdate;
 import org.example.entity.Detail;
 import org.example.search.dto.SearchDetailDto;
@@ -18,7 +19,7 @@ public class DetailController {
     private final DetailRestService detailRestService;
 
     @GetMapping(value = "details",produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Detail> details(@RequestParam(name = "name", required = false) String name){
+    public List<DetailExt> details(@RequestParam(name = "name", required = false) String name){
         return detailRestService.getDetails(name);
     }
 
