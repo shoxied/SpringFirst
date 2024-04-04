@@ -10,6 +10,7 @@ import org.example.dao.ext.DetailExt;
 import org.example.dao.ext.DetailUpdate;
 import org.example.entity.AttributeValue;
 import org.example.entity.Detail;
+import org.example.entity.ext.DetailList;
 import org.example.search.dto.SearchDetailDto;
 import org.example.search.dto.SearchDetailValueDto;
 import org.example.search.repo.SearchDetailRepo;
@@ -24,7 +25,9 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.StreamSupport;
 
 @Service
@@ -102,5 +105,56 @@ public class DetailRestServiceImpl implements DetailRestService {
                 .build());
 
         return detail;
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED)
+    public List<Detail> addDetails(DetailList update) {
+        List<Detail> details = new ArrayList<>();
+        for (DetailUpdate detailUpdate:update.getDetails()) {
+            List<AttributeValue> values = new ArrayList<>();
+
+            if (detailUpdate.getValues() != null) {
+                for (Integer valueId : detailUpdate.getValues()) {
+                    values.add(AttributeValue.builder()
+                            .value(valueRepository.findById(valueId).get())
+                            .build());
+                }
+            }
+
+            Detail savedDetail = Detail.builder()
+                    .brand(detailUpdate.getBrand())
+                    .oem(detailUpdate.getOem())
+                    .name(detailUpdate.getName())
+                    .attributeValues(values)
+                    .build();
+            Detail detail = detailRepository.save(savedDetail);
+
+            List<SearchDetailValueDto> attributes = new ArrayList<>();
+
+            if (detailUpdate.getValues() != null) {
+                for (AttributeValue attribute : detail.getAttributeValues()) {
+                    attributes.add(SearchDetailValueDto.builder()
+                            .id(attribute.getId())
+                            .attributeId(attribute.getValue().getAttribute().getId())
+                            .attributeName(attribute.getValue().getAttribute().getName())
+                            .valueId(attribute.getValue().getId())
+                            .value(attribute.getValue().getValue())
+                            .build());
+
+                }
+            }
+
+            searchDetailRepo.save(SearchDetailDto.builder()
+                    .id(detail.getId())
+                    .brand(detail.getBrand())
+                    .oem(detail.getOem())
+                    .name(detail.getName())
+                    .attributes(attributes)
+                    .build());
+
+            details.add(detail);
+        }
+        return details;
     }
 }

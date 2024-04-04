@@ -15,10 +15,7 @@ import java.util.List;
 public class DetailUpdate {
 
     private String brand;
-
     private String oem;
-
     private String name;
-
     private List<Integer> values;
 }

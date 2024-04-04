@@ -17,3 +17,6 @@ spring:
   sql:
     init:
       mode: always
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
