@@ -93,10 +93,8 @@ public class DetailRestServiceImplTest {
 
         detailRestService.addDetails(detailList);
 
-        //assertSame(expected.get(0), actual.get(0));
-
         ArgumentCaptor<Detail> captor = ArgumentCaptor.forClass(Detail.class);
-        Mockito.verify(detailRepository, times(2)).save(captor.capture());
+        Mockito.verify(detailRepository, times(1)).save(captor.capture());
 
         assertEquals("name1", captor.getAllValues().get(0).getName());
 

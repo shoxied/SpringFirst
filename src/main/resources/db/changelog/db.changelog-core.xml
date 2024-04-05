@@ -7,5 +7,6 @@
     <include file="db.changelog-20240315-MySpring-2-attribute-dir.xml" relativeToChangelogFile="true"/>
     <include file="db.changelog-20240315-MySpring-3-attribute-dir.xml" relativeToChangelogFile="true"/>
     <include file="db.changelog-20240315-MySpring-4-value-dir.xml" relativeToChangelogFile="true"/>
+    <include file="db.changelog-20240415-MySpring-5-index-detail.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

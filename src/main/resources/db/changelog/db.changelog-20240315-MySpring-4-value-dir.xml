@@ -3,7 +3,7 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
 
-    <changeSet author="Ilia Ternovoi" id="20240315-MySpring-2-attribute-dir">
+    <changeSet author="Ilia Ternovoi" id="20240315-MySpring-4-value-dir">
 
         <insert tableName="value"><column name="attribute_id" value="1"/><column name="value" value="1"/></insert>
         <insert tableName="value"><column name="attribute_id" value="1"/><column name="value" value="2"/></insert>

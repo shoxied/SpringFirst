@@ -3,6 +3,7 @@ package org.example.service.Impl;
 import co.elastic.clients.elasticsearch._types.aggregations.Aggregation;
 import co.elastic.clients.elasticsearch._types.aggregations.AggregationBuilders;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.converter.DetailConverter;
 import org.example.dao.DetailRepository;
 import org.example.dao.ValueRepository;
@@ -32,6 +33,7 @@ import java.util.stream.StreamSupport;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class DetailRestServiceImpl implements DetailRestService {
 
     private final DetailRepository detailRepository;
@@ -111,6 +113,7 @@ public class DetailRestServiceImpl implements DetailRestService {
     @Transactional(propagation = Propagation.REQUIRED)
     public List<Detail> addDetails(DetailList update) {
         List<Detail> details = new ArrayList<>();
+
         for (DetailUpdate detailUpdate:update.getDetails()) {
             List<AttributeValue> values = new ArrayList<>();
 
@@ -122,39 +125,51 @@ public class DetailRestServiceImpl implements DetailRestService {
                 }
             }
 
-            Detail savedDetail = Detail.builder()
+            Detail detail = Detail.builder()
                     .brand(detailUpdate.getBrand())
                     .oem(detailUpdate.getOem())
                     .name(detailUpdate.getName())
                     .attributeValues(values)
                     .build();
-            Detail detail = detailRepository.save(savedDetail);
-
-            List<SearchDetailValueDto> attributes = new ArrayList<>();
-
-            if (detailUpdate.getValues() != null) {
-                for (AttributeValue attribute : detail.getAttributeValues()) {
-                    attributes.add(SearchDetailValueDto.builder()
-                            .id(attribute.getId())
-                            .attributeId(attribute.getValue().getAttribute().getId())
-                            .attributeName(attribute.getValue().getAttribute().getName())
-                            .valueId(attribute.getValue().getId())
-                            .value(attribute.getValue().getValue())
-                            .build());
-
-                }
-            }
-
-            searchDetailRepo.save(SearchDetailDto.builder()
-                    .id(detail.getId())
-                    .brand(detail.getBrand())
-                    .oem(detail.getOem())
-                    .name(detail.getName())
-                    .attributes(attributes)
-                    .build());
-
+            
             details.add(detail);
         }
+
+        log.info("save {} objects to db", details.size());
+        for(Detail detail:details){
+            if(detailRepository.findByBrand(detail.getBrand()).size() != 0 && detailRepository.findByOem(detail.getOem()).size() != 0){
+                log.warn("not unique detail identifier");
+                return null;
+            }
+        }
+        List<Detail> savedList = StreamSupport.stream(detailRepository.saveAll(details).spliterator(), false).toList();
+
+        List<SearchDetailDto> detailDtos = new ArrayList<>();
+        for(Detail detail:savedList){
+
+            SearchDetailDto searchDetailDto = new SearchDetailDto();
+            searchDetailDto.setId(detail.getId());
+            searchDetailDto.setBrand(detail.getBrand());
+            searchDetailDto.setOem(detail.getOem());
+            searchDetailDto.setName(detail.getName());
+
+            List<SearchDetailValueDto> attributes = new ArrayList<>();
+            for (AttributeValue attributeValue:detail.getAttributeValues()){
+                SearchDetailValueDto searchDetailValueDto = new SearchDetailValueDto();
+                searchDetailValueDto.setId(attributeValue.getId());
+                searchDetailValueDto.setAttributeId(attributeValue.getValue().getAttribute().getId());
+                searchDetailValueDto.setAttributeName(attributeValue.getValue().getAttribute().getName());
+                searchDetailValueDto.setValueId(attributeValue.getValue().getId());
+                searchDetailValueDto.setValue(attributeValue.getValue().getValue());
+                attributes.add(searchDetailValueDto);
+            }
+
+            searchDetailDto.setAttributes(attributes);
+            detailDtos.add(searchDetailDto);
+        }
+
+        log.info("save {} objects to elastic", detailDtos.size());
+        searchDetailRepo.saveAll(detailDtos);
         return details;
     }
 }

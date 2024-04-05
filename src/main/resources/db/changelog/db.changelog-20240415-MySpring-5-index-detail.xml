@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet author="Ilia Ternovoi" id="20240415-MySpring-5-index-detail">
+        <createIndex tableName="detail" indexName="detail_identifier">
+            <column name="brand"/>
+            <column name="oem"/>
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>

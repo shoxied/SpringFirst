@@ -1,0 +1,98 @@
+2024-04-05 12:49:38,020  INFO [main] - org.example.Application                  : Starting Application using Java 18.0.2 with PID 16905 (/home/ternovoi.i/IdeaProjects/SpringFirst/target/classes started by ternovoi.i in /home/ternovoi.i/IdeaProjects/SpringFirst)
+2024-04-05 12:49:38,021  INFO [main] - org.example.Application                  : No active profile set, falling back to 1 default profile: "default"
+2024-04-05 12:49:38,392  INFO [main] - .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2024-04-05 12:49:38,392  INFO [main] - .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2024-04-05 12:49:38,424  INFO [main] - .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 27 ms. Found 4 JPA repository interfaces.
+2024-04-05 12:49:38,424  INFO [main] - .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2024-04-05 12:49:38,425  INFO [main] - .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Elasticsearch repositories in DEFAULT mode.
+2024-04-05 12:49:38,429  INFO [main] - .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 3 ms. Found 1 Elasticsearch repository interface.
+2024-04-05 12:49:38,595  INFO [main] - .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2024-04-05 12:49:38,596  INFO [main] - .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Reactive Elasticsearch repositories in DEFAULT mode.
+2024-04-05 12:49:38,608  INFO [main] - .RepositoryConfigurationExtensionSupport : Spring Data Reactive Elasticsearch - Could not safely identify store assignment for repository candidate interface org.example.dao.AttributeRepository; If you want this repository to be a Reactive Elasticsearch repository, consider annotating your entities with one of these annotations: org.springframework.data.elasticsearch.annotations.Document (preferred), or consider extending one of the following types with your repository: org.springframework.data.elasticsearch.repository.ReactiveElasticsearchRepository
+2024-04-05 12:49:38,608  INFO [main] - .RepositoryConfigurationExtensionSupport : Spring Data Reactive Elasticsearch - Could not safely identify store assignment for repository candidate interface org.example.dao.AttributeValueRepository; If you want this repository to be a Reactive Elasticsearch repository, consider annotating your entities with one of these annotations: org.springframework.data.elasticsearch.annotations.Document (preferred), or consider extending one of the following types with your repository: org.springframework.data.elasticsearch.repository.ReactiveElasticsearchRepository
+2024-04-05 12:49:38,608  INFO [main] - .RepositoryConfigurationExtensionSupport : Spring Data Reactive Elasticsearch - Could not safely identify store assignment for repository candidate interface org.example.dao.DetailRepository; If you want this repository to be a Reactive Elasticsearch repository, consider annotating your entities with one of these annotations: org.springframework.data.elasticsearch.annotations.Document (preferred), or consider extending one of the following types with your repository: org.springframework.data.elasticsearch.repository.ReactiveElasticsearchRepository
+2024-04-05 12:49:38,608  INFO [main] - .RepositoryConfigurationExtensionSupport : Spring Data Reactive Elasticsearch - Could not safely identify store assignment for repository candidate interface org.example.dao.ValueRepository; If you want this repository to be a Reactive Elasticsearch repository, consider annotating your entities with one of these annotations: org.springframework.data.elasticsearch.annotations.Document (preferred), or consider extending one of the following types with your repository: org.springframework.data.elasticsearch.repository.ReactiveElasticsearchRepository
+2024-04-05 12:49:38,611  INFO [main] - .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 14 ms. Found 0 Reactive Elasticsearch repository interfaces.
+2024-04-05 12:49:38,917  INFO [main] - o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2024-04-05 12:49:38,925  INFO [main] - o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2024-04-05 12:49:38,925  INFO [main] - o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.19]
+2024-04-05 12:49:38,961  INFO [main] - o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2024-04-05 12:49:38,961  INFO [main] - w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 901 ms
+2024-04-05 12:49:39,049  INFO [main] - com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2024-04-05 12:49:39,105  INFO [main] - com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@73bb1337
+2024-04-05 12:49:39,106  INFO [main] - com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2024-04-05 12:49:39,198  INFO [main] - liquibase.database                       : Set default schema name to test1
+2024-04-05 12:49:39,507  INFO [main] - liquibase.changelog                      : Reading from test1.databasechangelog
+2024-04-05 12:49:39,558  INFO [main] - liquibase.ui                             : Database is up to date, no changesets to execute
+2024-04-05 12:49:39,559  INFO [main] - liquibase.changelog                      : Reading from test1.databasechangelog
+2024-04-05 12:49:39,564  INFO [main] - liquibase.util                           : UPDATE SUMMARY
+2024-04-05 12:49:39,564  INFO [main] - liquibase.util                           : Run:                          0
+2024-04-05 12:49:39,564  INFO [main] - liquibase.util                           : Previously run:               4
+2024-04-05 12:49:39,564  INFO [main] - liquibase.util                           : Filtered out:                 0
+2024-04-05 12:49:39,564  INFO [main] - liquibase.util                           : -------------------------------
+2024-04-05 12:49:39,564  INFO [main] - liquibase.util                           : Total change sets:            4
+2024-04-05 12:49:39,564  INFO [main] - liquibase.util                           : Update summary generated
+2024-04-05 12:49:39,583  INFO [main] - liquibase.lockservice                    : Successfully released change log lock
+2024-04-05 12:49:39,584  INFO [main] - liquibase.command                        : Command execution complete
+2024-04-05 12:49:39,638  INFO [main] - o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2024-04-05 12:49:39,667  INFO [main] - org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.4.4.Final
+2024-04-05 12:49:39,685  INFO [main] - o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2024-04-05 12:49:39,808  INFO [main] - o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2024-04-05 12:49:39,842  WARN [main] - org.hibernate.dialect.Dialect            : HHH000511: The 11.16.0 version for [org.hibernate.dialect.PostgreSQLDialect] is no longer supported, hence certain features may not work properly. The minimum supported version is 12.0.0. Check the community dialects project for available legacy versions.
+2024-04-05 12:49:40,349  INFO [main] - o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2024-04-05 12:49:40,350  INFO [main] - j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2024-04-05 12:49:40,821  WARN [main] - JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2024-04-05 12:49:41,092  INFO [main] - o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path ''
+2024-04-05 12:49:41,099  INFO [main] - org.example.Application                  : Started Application in 3.33 seconds (process running for 3.615)
+2024-04-05 12:50:17,306  INFO [SpringApplicationShutdownHook] - j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2024-04-05 12:50:17,307  INFO [SpringApplicationShutdownHook] - com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2024-04-05 12:50:17,308  INFO [SpringApplicationShutdownHook] - com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2024-04-05 12:50:18,487  INFO [main] - org.example.Application                  : Starting Application using Java 18.0.2 with PID 17040 (/home/ternovoi.i/IdeaProjects/SpringFirst/target/classes started by ternovoi.i in /home/ternovoi.i/IdeaProjects/SpringFirst)
+2024-04-05 12:50:18,488  INFO [main] - org.example.Application                  : No active profile set, falling back to 1 default profile: "default"
+2024-04-05 12:50:18,866  INFO [main] - .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2024-04-05 12:50:18,867  INFO [main] - .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2024-04-05 12:50:18,898  INFO [main] - .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 27 ms. Found 4 JPA repository interfaces.
+2024-04-05 12:50:18,899  INFO [main] - .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2024-04-05 12:50:18,900  INFO [main] - .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Elasticsearch repositories in DEFAULT mode.
+2024-04-05 12:50:18,905  INFO [main] - .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 5 ms. Found 1 Elasticsearch repository interface.
+2024-04-05 12:50:19,078  INFO [main] - .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2024-04-05 12:50:19,078  INFO [main] - .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Reactive Elasticsearch repositories in DEFAULT mode.
+2024-04-05 12:50:19,091  INFO [main] - .RepositoryConfigurationExtensionSupport : Spring Data Reactive Elasticsearch - Could not safely identify store assignment for repository candidate interface org.example.dao.AttributeRepository; If you want this repository to be a Reactive Elasticsearch repository, consider annotating your entities with one of these annotations: org.springframework.data.elasticsearch.annotations.Document (preferred), or consider extending one of the following types with your repository: org.springframework.data.elasticsearch.repository.ReactiveElasticsearchRepository
+2024-04-05 12:50:19,091  INFO [main] - .RepositoryConfigurationExtensionSupport : Spring Data Reactive Elasticsearch - Could not safely identify store assignment for repository candidate interface org.example.dao.AttributeValueRepository; If you want this repository to be a Reactive Elasticsearch repository, consider annotating your entities with one of these annotations: org.springframework.data.elasticsearch.annotations.Document (preferred), or consider extending one of the following types with your repository: org.springframework.data.elasticsearch.repository.ReactiveElasticsearchRepository
+2024-04-05 12:50:19,092  INFO [main] - .RepositoryConfigurationExtensionSupport : Spring Data Reactive Elasticsearch - Could not safely identify store assignment for repository candidate interface org.example.dao.DetailRepository; If you want this repository to be a Reactive Elasticsearch repository, consider annotating your entities with one of these annotations: org.springframework.data.elasticsearch.annotations.Document (preferred), or consider extending one of the following types with your repository: org.springframework.data.elasticsearch.repository.ReactiveElasticsearchRepository
+2024-04-05 12:50:19,092  INFO [main] - .RepositoryConfigurationExtensionSupport : Spring Data Reactive Elasticsearch - Could not safely identify store assignment for repository candidate interface org.example.dao.ValueRepository; If you want this repository to be a Reactive Elasticsearch repository, consider annotating your entities with one of these annotations: org.springframework.data.elasticsearch.annotations.Document (preferred), or consider extending one of the following types with your repository: org.springframework.data.elasticsearch.repository.ReactiveElasticsearchRepository
+2024-04-05 12:50:19,094  INFO [main] - .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 15 ms. Found 0 Reactive Elasticsearch repository interfaces.
+2024-04-05 12:50:19,391  INFO [main] - o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2024-04-05 12:50:19,398  INFO [main] - o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2024-04-05 12:50:19,399  INFO [main] - o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.19]
+2024-04-05 12:50:19,435  INFO [main] - o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2024-04-05 12:50:19,436  INFO [main] - w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 900 ms
+2024-04-05 12:50:19,525  INFO [main] - com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2024-04-05 12:50:19,581  INFO [main] - com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@3e28d779
+2024-04-05 12:50:19,582  INFO [main] - com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2024-04-05 12:50:19,675  INFO [main] - liquibase.database                       : Set default schema name to test1
+2024-04-05 12:50:20,000  INFO [main] - liquibase.changelog                      : Reading from test1.databasechangelog
+2024-04-05 12:50:20,050  INFO [main] - liquibase.ui                             : Database is up to date, no changesets to execute
+2024-04-05 12:50:20,051  INFO [main] - liquibase.changelog                      : Reading from test1.databasechangelog
+2024-04-05 12:50:20,056  INFO [main] - liquibase.util                           : UPDATE SUMMARY
+2024-04-05 12:50:20,056  INFO [main] - liquibase.util                           : Run:                          0
+2024-04-05 12:50:20,056  INFO [main] - liquibase.util                           : Previously run:               4
+2024-04-05 12:50:20,056  INFO [main] - liquibase.util                           : Filtered out:                 0
+2024-04-05 12:50:20,056  INFO [main] - liquibase.util                           : -------------------------------
+2024-04-05 12:50:20,057  INFO [main] - liquibase.util                           : Total change sets:            4
+2024-04-05 12:50:20,057  INFO [main] - liquibase.util                           : Update summary generated
+2024-04-05 12:50:20,075  INFO [main] - liquibase.lockservice                    : Successfully released change log lock
+2024-04-05 12:50:20,076  INFO [main] - liquibase.command                        : Command execution complete
+2024-04-05 12:50:20,128  INFO [main] - o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2024-04-05 12:50:20,156  INFO [main] - org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.4.4.Final
+2024-04-05 12:50:20,173  INFO [main] - o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2024-04-05 12:50:20,294  INFO [main] - o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2024-04-05 12:50:20,325  WARN [main] - org.hibernate.dialect.Dialect            : HHH000511: The 11.16.0 version for [org.hibernate.dialect.PostgreSQLDialect] is no longer supported, hence certain features may not work properly. The minimum supported version is 12.0.0. Check the community dialects project for available legacy versions.
+2024-04-05 12:50:20,819  INFO [main] - o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2024-04-05 12:50:20,820  INFO [main] - j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2024-04-05 12:50:21,309  WARN [main] - JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2024-04-05 12:50:21,573  INFO [main] - o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path ''
+2024-04-05 12:50:21,582  INFO [main] - org.example.Application                  : Started Application in 3.37 seconds (process running for 3.698)
+2024-04-05 12:52:22,147  INFO [SpringApplicationShutdownHook] - j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2024-04-05 12:52:22,148  INFO [SpringApplicationShutdownHook] - com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2024-04-05 12:52:22,149  INFO [SpringApplicationShutdownHook] - com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.

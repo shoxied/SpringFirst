@@ -12,11 +12,12 @@ spring:
       data-source-properties:
         currentSchema: test1
       auto-commit: false
+  flyway:
+    enabled: false
   liquibase:
     change-log: classpath:db/changelog/db.changelog-core.xml
   sql:
     init:
       mode: always
-springdoc:
-  swagger-ui:
-    path: /swagger-ui.html
+  elasticsearch:
+    uris: [ "http://localhost:9200" ]

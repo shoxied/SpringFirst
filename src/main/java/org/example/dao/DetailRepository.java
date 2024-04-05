@@ -9,4 +9,6 @@ import java.util.List;
 
 
 public interface DetailRepository extends CrudRepository<Detail, Integer> {
+    List<Detail> findByBrand(String brand);
+    List<Detail> findByOem(String oem);
 }

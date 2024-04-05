@@ -46,4 +46,9 @@ public class DetailController {
     public void importCSV(@RequestPart("file") MultipartFile file) throws IOException {
         detailCsvReader.read(file.getInputStream());
     }
+
+    @PostMapping(value = "csvValues", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public void importCSVAttrValues(@RequestPart("file") MultipartFile file) throws IOException {
+        detailCsvReader.readAttrValues(file.getInputStream());
+    }
 }

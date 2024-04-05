@@ -5,4 +5,5 @@ import java.io.InputStream;
 
 public interface DetailCsvReader {
     void read(InputStream inputStream) throws IOException;
+    void readAttrValues(InputStream inputStream) throws IOException;
 }
