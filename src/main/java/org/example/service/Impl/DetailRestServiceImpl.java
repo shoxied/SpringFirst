@@ -81,30 +81,36 @@ public class DetailRestServiceImpl implements DetailRestService {
                 .name(update.getName())
                 .attributeValues(values)
                 .build();
-        Detail detail = detailRepository.save(savedDetail);
-
-        List<SearchDetailValueDto> attributes = new ArrayList<>();
-
-        if (update.getValues() != null){
-            for (AttributeValue attribute: detail.getAttributeValues()){
-                attributes.add(SearchDetailValueDto.builder()
-                        .id(attribute.getId())
-                        .attributeId(attribute.getValue().getAttribute().getId())
-                        .attributeName(attribute.getValue().getAttribute().getName())
-                        .valueId(attribute.getValue().getId())
-                        .value(attribute.getValue().getValue())
-                        .build());
-
-            }
+        Detail detail = new Detail();
+        if(detailRepository.findByBrand(savedDetail.getBrand()).size() != 0 && detailRepository.findByOem(savedDetail.getOem()).size() != 0){
+            log.warn("not unique detail identifier, object didn't saved");
         }
+        else{
+            detail = detailRepository.save(savedDetail);
 
-        searchDetailRepo.save(SearchDetailDto.builder()
-                .id(detail.getId())
-                .brand(detail.getBrand())
-                .oem(detail.getOem())
-                .name(detail.getName())
-                .attributes(attributes)
-                .build());
+            List<SearchDetailValueDto> attributes = new ArrayList<>();
+
+            if (update.getValues() != null){
+                for (AttributeValue attribute: detail.getAttributeValues()){
+                    attributes.add(SearchDetailValueDto.builder()
+                            .id(attribute.getId())
+                            .attributeId(attribute.getValue().getAttribute().getId())
+                            .attributeName(attribute.getValue().getAttribute().getName())
+                            .valueId(attribute.getValue().getId())
+                            .value(attribute.getValue().getValue())
+                            .build());
+
+                }
+            }
+
+            searchDetailRepo.save(SearchDetailDto.builder()
+                    .id(detail.getId())
+                    .brand(detail.getBrand())
+                    .oem(detail.getOem())
+                    .name(detail.getName())
+                    .attributes(attributes)
+                    .build());
+        }
 
         return detail;
     }
@@ -113,6 +119,7 @@ public class DetailRestServiceImpl implements DetailRestService {
     @Transactional(propagation = Propagation.REQUIRED)
     public List<Detail> addDetails(DetailList update) {
         List<Detail> details = new ArrayList<>();
+        int count = 0;
 
         for (DetailUpdate detailUpdate:update.getDetails()) {
             List<AttributeValue> values = new ArrayList<>();
@@ -131,18 +138,18 @@ public class DetailRestServiceImpl implements DetailRestService {
                     .name(detailUpdate.getName())
                     .attributeValues(values)
                     .build();
-            
-            details.add(detail);
-        }
 
-        log.info("save {} objects to db", details.size());
-        for(Detail detail:details){
             if(detailRepository.findByBrand(detail.getBrand()).size() != 0 && detailRepository.findByOem(detail.getOem()).size() != 0){
-                log.warn("not unique detail identifier");
-                return null;
+                count++;
+                log.warn("not unique detail identifier, {} objects didn't saved", count);
+            }
+            else{
+                details.add(detail);
             }
         }
+
         List<Detail> savedList = StreamSupport.stream(detailRepository.saveAll(details).spliterator(), false).toList();
+        log.info("save {} objects to db", details.size());
 
         List<SearchDetailDto> detailDtos = new ArrayList<>();
         for(Detail detail:savedList){
@@ -170,6 +177,6 @@ public class DetailRestServiceImpl implements DetailRestService {
 
         log.info("save {} objects to elastic", detailDtos.size());
         searchDetailRepo.saveAll(detailDtos);
-        return details;
+        return savedList;
     }
 }

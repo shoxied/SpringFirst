@@ -9,4 +9,11 @@
 <li>liquibase 4</li>
 <li>junit 5</li>
 <li>mockito</li>
+<li>swagger-ui</li>
+<li>rest json</li>
 </ul>
+
+<h4>Документация</h4>
+<h6>swagger</h6>
+<a href="http://localhost:8188/swagger-ui.html#/">
+http://localhost:8080/swagger-ui/index.html#

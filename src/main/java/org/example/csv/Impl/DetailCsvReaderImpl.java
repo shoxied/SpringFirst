@@ -30,7 +30,7 @@ public class DetailCsvReaderImpl implements DetailCsvReader {
 
     private final DetailRestService detailRestService;
     private final AttributeRepository attributeRepository;
-    private final ValueRepository valueRepository;
+
     @Override
     public void read(InputStream inputStream) throws IOException {
         CSVParser csvParser = new CSVParser(new InputStreamReader(inputStream), CSVFormat.DEFAULT.builder().setHeader().build());

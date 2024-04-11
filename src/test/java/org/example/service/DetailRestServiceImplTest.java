@@ -25,8 +25,7 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class DetailRestServiceImplTest {
@@ -58,7 +57,7 @@ public class DetailRestServiceImplTest {
         assertSame(expected, actual);
 
         ArgumentCaptor<Detail> detailCaptor = ArgumentCaptor.forClass(Detail.class);
-        Mockito.verify(detailRepository).save(detailCaptor.capture());
+        verify(detailRepository).save(detailCaptor.capture());
         Detail savedDetail = detailCaptor.getValue();
         assertEquals("name", savedDetail.getName());
         assertEquals("oem", savedDetail.getOem());
@@ -72,12 +71,14 @@ public class DetailRestServiceImplTest {
         detailUpdate1.setOem("oem1");
         detailUpdate1.setBrand("brand1");
         Detail expected1 = new Detail();
+        expected1.setId(1);
 
         DetailUpdate detailUpdate2 = new DetailUpdate();
         detailUpdate2.setName("name2");
         detailUpdate2.setOem("oem2");
         detailUpdate2.setBrand("brand2");
         Detail expected2 = new Detail();
+        expected2.setId(2);
 
         List<Detail> expected = new ArrayList<>();
         expected.add(expected1);
@@ -89,16 +90,18 @@ public class DetailRestServiceImplTest {
         DetailList detailList = new DetailList();
         detailList.setDetails(detailUpdates);
 
-        when(detailRepository.save(any())).thenReturn(expected1).thenReturn(expected2);
+        when(detailRepository.saveAll(any())).thenReturn(expected);
 
-        detailRestService.addDetails(detailList);
+        List<Detail> actual = detailRestService.addDetails(detailList);
+        assertEquals(1, actual.get(0).getId());
+        assertEquals(2, actual.get(1).getId());
 
-        ArgumentCaptor<Detail> captor = ArgumentCaptor.forClass(Detail.class);
-        Mockito.verify(detailRepository, times(1)).save(captor.capture());
+        ArgumentCaptor<List<Detail>> captor = ArgumentCaptor.forClass(List.class);
+        verify(detailRepository).saveAll(captor.capture());
 
-        assertEquals("name1", captor.getAllValues().get(0).getName());
+        assertEquals("name1", captor.getValue().get(0).getName());
 
-        assertEquals("name2", captor.getAllValues().get(1).getName());
+        assertEquals("name2", captor.getValue().get(1).getName());
     }
 
     @Test
@@ -120,6 +123,6 @@ public class DetailRestServiceImplTest {
 
         detailRestService.addDetail(detailUpdate);
 
-        Mockito.verify(valueRepository, times(2)).findById(any());
+        verify(valueRepository, times(2)).findById(any());
     }
 }
