@@ -13,7 +13,7 @@
         </encoder>
     </appender>
 
-    <logger name="org.example" level="INFO"/>
+    <logger name="org.example" level="DEBUG"/>
     <root level="INFO">
         <appender-ref ref="FILE" />
     </root>

@@ -1,5 +1,7 @@
 package org.example;
 
+import org.example.aspect.DetailRestAspect;
+import org.example.config.JaegerConfiguration;
 import org.example.controller.DetailController;
 import org.example.csv.Impl.DetailCsvReaderImpl;
 import org.example.dao.DetailRepository;
@@ -17,7 +19,9 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @ComponentScan(basePackageClasses = {
         DetailController.class,
         DetailRestServiceImpl.class,
-        DetailCsvReaderImpl.class
+        DetailCsvReaderImpl.class,
+        JaegerConfiguration.class,
+        DetailRestAspect.class
 })
 @EntityScan(basePackageClasses = {Detail.class})
 @EnableJpaRepositories(basePackageClasses = {DetailRepository.class})

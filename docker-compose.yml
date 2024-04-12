@@ -1,0 +1,45 @@
+version: "3.7"
+services:
+  elastic:
+    container_name: elastic
+    image: elasticsearch:8.13.0
+    hostname: elastic
+    restart: always
+    ports:
+      - 9200:9200
+    environment:
+      - discovery.type=single-node
+      - bootstrap.memory_lock=false
+      - ingest.geoip.downloader.enabled=false
+      - xpack.security.enabled=false
+  postgres:
+    image: postgres:11
+    container_name: postgres
+    hostname: postgres
+    restart: always
+    environment:
+      - POSTGRES_USER=gcs
+      - POSTGRES_PASSWORD=gcs
+      - POSTGRES_DB=gcs3
+    ports:
+      - 5432:5432
+  myfirstspring:
+    image: myfirstspring:1.0.0
+    container_name: myservice
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - 8080:8080
+    environment:
+      - spring.datasource.url=jdbc:postgresql://10.54.2.27:5432/gcs3
+      - spring.elasticsearch.uris=http://10.54.2.27:9200
+  jaeger:
+    container_name: jaeger
+    image: jaegertracing/all-in-one:1.52.0
+    hostname: jaeger
+    restart: always
+    ports:
+      - 6831:6831/udp
+      - 16686:16686

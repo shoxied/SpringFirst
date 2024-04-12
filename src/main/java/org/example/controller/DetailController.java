@@ -1,5 +1,7 @@
 package org.example.controller;
 
+import io.opentracing.Span;
+import io.opentracing.Tracer;
 import lombok.RequiredArgsConstructor;
 import org.example.csv.DetailCsvReader;
 import org.example.dao.ext.DetailExt;
@@ -24,8 +26,8 @@ import java.util.Set;
 public class DetailController {
 
     private final DetailRestService detailRestService;
-
     private final DetailCsvReader detailCsvReader;
+    private final Tracer tracer;
 
     @GetMapping(value = "details",produces = MediaType.APPLICATION_JSON_VALUE)
     public List<DetailExt> details(@RequestParam(name = "name", required = false) String name){

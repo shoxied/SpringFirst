@@ -1,4 +1,6 @@
 spring:
+  application:
+    name: first-app
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/gcs3
@@ -21,3 +23,23 @@ spring:
       mode: always
   elasticsearch:
     uris: [ "http://localhost:9200" ]
+
+management:
+  endpoints:
+    web:
+      base-path: /sys
+      exposure:
+        include: health,info,metrics,heapdump,threaddump,configprops,env,shutdown
+  tracing:
+    enabled: true
+    sampling:
+      probability: 1.0
+
+javamelody:
+  enabled: true
+  spring-monitoring-enabled: false
+  resolution-seconds: 30
+
+opentracing:
+  jaeger:
+    log-spans: false
