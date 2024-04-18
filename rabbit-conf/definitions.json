@@ -1,0 +1,137 @@
+{
+  "users": [
+    {
+      "name": "axpl",
+      "password": "axpl2pass",
+      "tags": "administrator"
+    },
+    {
+      "name": "gcs",
+      "password": "gcs",
+      "tags": "administrator"
+    },
+    {
+      "name": "gcs3",
+      "password": "gcs3",
+      "tags": "administrator"
+    },
+    {
+      "name": "test",
+      "password": "test",
+      "tags": ""
+    }
+  ],
+  "vhosts": [
+    {
+      "name": "/"
+    },
+    {
+      "name": "prag"
+    },
+    {
+      "name": "gcs"
+    },
+    {
+      "name": "test"
+    }
+  ],
+  "permissions": [
+    {
+      "user": "axpl",
+      "vhost": "prag",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "gcs",
+      "vhost": "gcs",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "gcs3",
+      "vhost": "gcs",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "test",
+      "vhost": "test",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    }
+  ],
+  "policies": [
+    {
+      "vhost": "/",
+      "name": "ha",
+      "pattern": "",
+      "definition": {
+        "ha-mode": "all",
+        "ha-sync-mode": "automatic"
+      }
+    },
+    {
+      "vhost": "prag",
+      "name": "ha",
+      "pattern": "",
+      "definition": {
+        "ha-mode": "all",
+        "ha-sync-mode": "automatic"
+      }
+    },
+    {
+      "vhost": "gcs",
+      "name": "single",
+      "pattern": "",
+      "definition": {
+        "ha-mode": "exactly",
+        "ha-params": 1,
+        "ha-sync-mode": "automatic"
+      }
+    },
+    {
+      "vhost": "test",
+      "name": "ha",
+      "pattern": "",
+      "definition": {
+        "ha-mode": "all",
+        "ha-sync-mode": "automatic"
+      }
+    }
+  ],
+  "exchanges": [
+    {
+      "name": "test",
+      "vhost": "test",
+      "type": "topic",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    }
+  ],
+  "queues": [
+    {
+      "name": "test",
+      "vhost": "test",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    }
+  ],
+  "bindings": [
+    {
+      "source": "test",
+      "vhost": "test",
+      "destination": "test",
+      "destination_type": "queue",
+      "routing_key": "#",
+      "arguments": {}
+    }
+  ]
+}

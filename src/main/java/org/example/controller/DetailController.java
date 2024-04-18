@@ -27,7 +27,7 @@ public class DetailController {
 
     private final DetailRestService detailRestService;
     private final DetailCsvReader detailCsvReader;
-    private final Tracer tracer;
+
 
     @GetMapping(value = "details",produces = MediaType.APPLICATION_JSON_VALUE)
     public List<DetailExt> details(@RequestParam(name = "name", required = false) String name){
@@ -45,9 +45,7 @@ public class DetailController {
     }
 
     @PostMapping(value = "csv", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public void importCSV(@RequestPart("file") MultipartFile file) throws IOException {
-        detailCsvReader.read(file.getInputStream());
-    }
+    public void importCSV(@RequestPart("file") MultipartFile file) throws IOException {detailCsvReader.read(file.getInputStream());}
 
     @PostMapping(value = "csvValues", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public void importCSVAttrValues(@RequestPart("file") MultipartFile file) throws IOException {

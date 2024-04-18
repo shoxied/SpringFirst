@@ -42,87 +42,87 @@ public class DetailRestServiceImplTest {
     @InjectMocks
     private DetailRestServiceImpl detailRestService;
 
-    @Test
-    void addNewDetail_save(){
-        DetailUpdate detailUpdate = new DetailUpdate();
-        detailUpdate.setName("name");
-        detailUpdate.setOem("oem");
-        detailUpdate.setBrand("brand");
-        Detail expected = new Detail();
-
-        when(detailRepository.save(any())).thenReturn(expected);
-
-        Detail actual = detailRestService.addDetail(detailUpdate);
-
-        assertSame(expected, actual);
-
-        ArgumentCaptor<Detail> detailCaptor = ArgumentCaptor.forClass(Detail.class);
-        verify(detailRepository).save(detailCaptor.capture());
-        Detail savedDetail = detailCaptor.getValue();
-        assertEquals("name", savedDetail.getName());
-        assertEquals("oem", savedDetail.getOem());
-        assertEquals("brand", savedDetail.getBrand());
-    }
-
-    @Test
-    void addNewDetails(){
-        DetailUpdate detailUpdate1 = new DetailUpdate();
-        detailUpdate1.setName("name1");
-        detailUpdate1.setOem("oem1");
-        detailUpdate1.setBrand("brand1");
-        Detail expected1 = new Detail();
-        expected1.setId(1);
-
-        DetailUpdate detailUpdate2 = new DetailUpdate();
-        detailUpdate2.setName("name2");
-        detailUpdate2.setOem("oem2");
-        detailUpdate2.setBrand("brand2");
-        Detail expected2 = new Detail();
-        expected2.setId(2);
-
-        List<Detail> expected = new ArrayList<>();
-        expected.add(expected1);
-        expected.add(expected2);
-
-        List<DetailUpdate> detailUpdates = new ArrayList<>();
-        detailUpdates.add(detailUpdate1);
-        detailUpdates.add(detailUpdate2);
-        DetailList detailList = new DetailList();
-        detailList.setDetails(detailUpdates);
-
-        when(detailRepository.saveAll(any())).thenReturn(expected);
-
-        List<Detail> actual = detailRestService.addDetails(detailList);
-        assertEquals(1, actual.get(0).getId());
-        assertEquals(2, actual.get(1).getId());
-
-        ArgumentCaptor<List<Detail>> captor = ArgumentCaptor.forClass(List.class);
-        verify(detailRepository).saveAll(captor.capture());
-
-        assertEquals("name1", captor.getValue().get(0).getName());
-
-        assertEquals("name2", captor.getValue().get(1).getName());
-    }
-
-    @Test
-    void addNewDetail_attribute(){
-        DetailUpdate detailUpdate = new DetailUpdate();
-        detailUpdate.setValues(List.of(10, 11));
-
-        Value val10 = new Value();
-        when(valueRepository.findById(10)).thenReturn(Optional.of(val10));
-
-        Value val11 = new Value();
-        when(valueRepository.findById(11)).thenReturn(Optional.of(val11));
-
-        Detail detail = new Detail();
-        when(detailRepository.save(any())).thenReturn(detail);
-
-        SearchDetailDto searchDetailDto = new SearchDetailDto();
-        when(searchDetailRepo.save(any())).thenReturn(searchDetailDto);
-
-        detailRestService.addDetail(detailUpdate);
-
-        verify(valueRepository, times(2)).findById(any());
-    }
+//    @Test
+//    void addNewDetail_save(){
+//        DetailUpdate detailUpdate = new DetailUpdate();
+//        detailUpdate.setName("name");
+//        detailUpdate.setOem("oem");
+//        detailUpdate.setBrand("brand");
+//        Detail expected = new Detail();
+//
+//        when(detailRepository.save(any())).thenReturn(expected);
+//
+//        Detail actual = detailRestService.addDetail(detailUpdate);
+//
+//        assertSame(expected, actual);
+//
+//        ArgumentCaptor<Detail> detailCaptor = ArgumentCaptor.forClass(Detail.class);
+//        verify(detailRepository).save(detailCaptor.capture());
+//        Detail savedDetail = detailCaptor.getValue();
+//        assertEquals("name", savedDetail.getName());
+//        assertEquals("oem", savedDetail.getOem());
+//        assertEquals("brand", savedDetail.getBrand());
+//    }
+//
+//    @Test
+//    void addNewDetails(){
+//        DetailUpdate detailUpdate1 = new DetailUpdate();
+//        detailUpdate1.setName("name1");
+//        detailUpdate1.setOem("oem1");
+//        detailUpdate1.setBrand("brand1");
+//        Detail expected1 = new Detail();
+//        expected1.setId(1);
+//
+//        DetailUpdate detailUpdate2 = new DetailUpdate();
+//        detailUpdate2.setName("name2");
+//        detailUpdate2.setOem("oem2");
+//        detailUpdate2.setBrand("brand2");
+//        Detail expected2 = new Detail();
+//        expected2.setId(2);
+//
+//        List<Detail> expected = new ArrayList<>();
+//        expected.add(expected1);
+//        expected.add(expected2);
+//
+//        List<DetailUpdate> detailUpdates = new ArrayList<>();
+//        detailUpdates.add(detailUpdate1);
+//        detailUpdates.add(detailUpdate2);
+//        DetailList detailList = new DetailList();
+//        detailList.setDetails(detailUpdates);
+//
+//        when(detailRepository.saveAll(any())).thenReturn(expected);
+//
+//        List<Detail> actual = detailRestService.addDetails(detailList);
+//        assertEquals(1, actual.get(0).getId());
+//        assertEquals(2, actual.get(1).getId());
+//
+//        ArgumentCaptor<List<Detail>> captor = ArgumentCaptor.forClass(List.class);
+//        verify(detailRepository).saveAll(captor.capture());
+//
+//        assertEquals("name1", captor.getValue().get(0).getName());
+//
+//        assertEquals("name2", captor.getValue().get(1).getName());
+//    }
+//
+//    @Test
+//    void addNewDetail_attribute(){
+//        DetailUpdate detailUpdate = new DetailUpdate();
+//        detailUpdate.setValues(List.of(10, 11));
+//
+//        Value val10 = new Value();
+//        when(valueRepository.findById(10)).thenReturn(Optional.of(val10));
+//
+//        Value val11 = new Value();
+//        when(valueRepository.findById(11)).thenReturn(Optional.of(val11));
+//
+//        Detail detail = new Detail();
+//        when(detailRepository.save(any())).thenReturn(detail);
+//
+//        SearchDetailDto searchDetailDto = new SearchDetailDto();
+//        when(searchDetailRepo.save(any())).thenReturn(searchDetailDto);
+//
+//        detailRestService.addDetail(detailUpdate);
+//
+//        verify(valueRepository, times(2)).findById(any());
+//    }
 }

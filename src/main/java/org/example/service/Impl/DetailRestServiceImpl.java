@@ -2,9 +2,9 @@ package org.example.service.Impl;
 
 import co.elastic.clients.elasticsearch._types.aggregations.Aggregation;
 import co.elastic.clients.elasticsearch._types.aggregations.AggregationBuilders;
-import co.elastic.clients.elasticsearch.nodes.GarbageCollector;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.cache.RabbitListener;
 import org.example.converter.DetailConverter;
 import org.example.dao.DetailRepository;
 import org.example.dao.ValueRepository;
@@ -17,19 +17,22 @@ import org.example.search.dto.SearchDetailDto;
 import org.example.search.dto.SearchDetailValueDto;
 import org.example.search.repo.SearchDetailRepo;
 import org.example.service.DetailRestService;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.client.elc.NativeQuery;
 import org.springframework.data.elasticsearch.client.elc.NativeQueryBuilder;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
+import org.springframework.data.elasticsearch.core.query.Order;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.StreamSupport;
 
 @Service
@@ -39,6 +42,7 @@ public class DetailRestServiceImpl implements DetailRestService {
 
     private final DetailRepository detailRepository;
     private final ValueRepository valueRepository;
+    private final RabbitTemplate rabbitTemplate;
     private final SearchDetailRepo searchDetailRepo;
     private final ElasticsearchOperations elasticsearchOperations;
 
@@ -50,6 +54,8 @@ public class DetailRestServiceImpl implements DetailRestService {
         NativeQuery nativeQuery;
         Aggregation aggregation = AggregationBuilders.terms(ta->ta.field("string_value"));
 
+        builder.withSort(Sort.by("name").descending().and(Sort.by("value")));
+        builder.withPageable(Pageable.ofSize(10).withPage(5));
         if (name != null){
             nativeQuery = builder.withQuery(q->q.match(m->m.field("name").query(name)))
                     .withAggregation("attributes", aggregation).build();
@@ -57,6 +63,8 @@ public class DetailRestServiceImpl implements DetailRestService {
         else {
             nativeQuery = builder.withQuery(q->q.bool(b->b)).withAggregation("attributes", aggregation).build();
         }
+
+        nativeQuery.addSort(Sort.by("name").ascending());
 
         searchHits = elasticsearchOperations.search(nativeQuery, SearchDetailDto.class);
         return detailConverter.dtoToDetailExt(searchHits.getSearchHits().stream().map(SearchHit::getContent).toList());
@@ -82,37 +90,17 @@ public class DetailRestServiceImpl implements DetailRestService {
                 .name(update.getName())
                 .attributeValues(values)
                 .build();
+
         Detail detail = new Detail();
         if(detailRepository.findByBrand(savedDetail.getBrand()).size() != 0 && detailRepository.findByOem(savedDetail.getOem()).size() != 0){
             log.warn("not unique detail identifier, object didn't saved");
         }
         else{
             detail = detailRepository.save(savedDetail);
-
-            List<SearchDetailValueDto> attributes = new ArrayList<>();
-
-            if (update.getValues() != null){
-                for (AttributeValue attribute: detail.getAttributeValues()){
-                    attributes.add(SearchDetailValueDto.builder()
-                            .id(attribute.getId())
-                            .attributeId(attribute.getValue().getAttribute().getId())
-                            .attributeName(attribute.getValue().getAttribute().getName())
-                            .valueId(attribute.getValue().getId())
-                            .value(attribute.getValue().getValue())
-                            .build());
-
-                }
-            }
-
-            searchDetailRepo.save(SearchDetailDto.builder()
-                    .id(detail.getId())
-                    .brand(detail.getBrand())
-                    .oem(detail.getOem())
-                    .name(detail.getName())
-                    .attributes(attributes)
-                    .build());
+            rabbitTemplate.convertAndSend(RabbitListener.EXCHANGE,
+                    RabbitListener.ROUTING_KEY,
+                    detail.getId());
         }
-
         return detail;
     }
 

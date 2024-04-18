@@ -23,6 +23,31 @@ spring:
       mode: always
   elasticsearch:
     uris: [ "http://localhost:9200" ]
+  rabbitmq:
+    addresses: localhost:5672
+    username: gcs
+    password: gcs
+    virtual-host: gcs
+    ssl:
+      enabled: false
+    listener:
+      simple:
+        retry:
+          enabled: true
+          initial-interval: 3s
+          max-attempts: 1
+          max-interval: 300s
+          multiplier: 2
+      direct:
+        consumers-per-queue: 3
+        prefetch: 10
+    template:
+      retry:
+        enabled: true
+        initial-interval: 3s
+        max-attempts: 10
+        max-interval: 300s
+        multiplier: 2
 
 management:
   endpoints:
