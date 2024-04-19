@@ -37,7 +37,7 @@ public class RabbitListener implements InitializingBean {
     @org.springframework.amqp.rabbit.annotation.RabbitListener(bindings = @QueueBinding(key = ROUTING_KEY,
             value = @Queue(value = QUEUE, durable = "false", exclusive = "true"),
             exchange = @Exchange(value = EXCHANGE, durable = "false", type = "topic")))
-    private void receive(int id) throws IOException {
+    public void receive(int id) {
 
         log.info("received detail {}", id);
 
@@ -65,7 +65,7 @@ public class RabbitListener implements InitializingBean {
                 .attributes(attributes)
                 .build());
 
-        log.info("received detail {} to elastic", id);
+        log.info("saved detail {} to elastic", id);
     }
 
     @Override

@@ -17,4 +17,5 @@ public class DetailExt {
     private String oem;
     private String name;
     private List<DetailExtValues> values;
+
 }

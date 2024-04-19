@@ -17,6 +17,7 @@ import org.example.search.dto.SearchDetailDto;
 import org.example.search.dto.SearchDetailValueDto;
 import org.example.search.repo.SearchDetailRepo;
 import org.example.service.DetailRestService;
+import org.example.service.PersistenceService;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -45,6 +46,7 @@ public class DetailRestServiceImpl implements DetailRestService {
     private final RabbitTemplate rabbitTemplate;
     private final SearchDetailRepo searchDetailRepo;
     private final ElasticsearchOperations elasticsearchOperations;
+    private final PersistenceService persistenceService;
 
     @Override
     public List<DetailExt> getDetails(String name) {
@@ -52,55 +54,26 @@ public class DetailRestServiceImpl implements DetailRestService {
         NativeQueryBuilder builder = new NativeQueryBuilder();
         SearchHits<SearchDetailDto> searchHits;
         NativeQuery nativeQuery;
-        Aggregation aggregation = AggregationBuilders.terms(ta->ta.field("string_value"));
+        Aggregation aggregation = AggregationBuilders.terms(ta->ta.field("brand"));
 
-        builder.withSort(Sort.by("name").descending().and(Sort.by("value")));
-        builder.withPageable(Pageable.ofSize(10).withPage(5));
         if (name != null){
             nativeQuery = builder.withQuery(q->q.match(m->m.field("name").query(name)))
-                    .withAggregation("attributes", aggregation).build();
+                    .withAggregation("b", aggregation).build();
         }
         else {
-            nativeQuery = builder.withQuery(q->q.bool(b->b)).withAggregation("attributes", aggregation).build();
+            nativeQuery = builder.withQuery(q->q.bool(b->b)).withAggregation("b", aggregation).build();
         }
-
-        nativeQuery.addSort(Sort.by("name").ascending());
-
         searchHits = elasticsearchOperations.search(nativeQuery, SearchDetailDto.class);
         return detailConverter.dtoToDetailExt(searchHits.getSearchHits().stream().map(SearchHit::getContent).toList());
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRED)
     public Detail addDetail(DetailUpdate update) {
 
-        List<AttributeValue> values = new ArrayList<>();
-
-        if (update.getValues() != null){
-            for (Integer valueId: update.getValues()){
-                values.add(AttributeValue.builder()
-                        .value(valueRepository.findById(valueId).get())
-                        .build());
-            }
-        }
-
-        Detail savedDetail = Detail.builder()
-                .brand(update.getBrand())
-                .oem(update.getOem())
-                .name(update.getName())
-                .attributeValues(values)
-                .build();
-
-        Detail detail = new Detail();
-        if(detailRepository.findByBrand(savedDetail.getBrand()).size() != 0 && detailRepository.findByOem(savedDetail.getOem()).size() != 0){
-            log.warn("not unique detail identifier, object didn't saved");
-        }
-        else{
-            detail = detailRepository.save(savedDetail);
-            rabbitTemplate.convertAndSend(RabbitListener.EXCHANGE,
-                    RabbitListener.ROUTING_KEY,
-                    detail.getId());
-        }
+        Detail detail = persistenceService.saveDetail(update);
+        rabbitTemplate.convertAndSend(RabbitListener.EXCHANGE,
+                RabbitListener.ROUTING_KEY,
+                detail.getId());
         return detail;
     }
 
