@@ -11,7 +11,7 @@ import java.util.Map;
 @Setter
 @Builder(toBuilder = true)
 public class DetailResultExt {
-    private int total;
+    private Integer total;
     private List<DetailExt> details;
-    private Map<String, Integer> attributeCount;
+    private Map<String, Long> brands;
 }

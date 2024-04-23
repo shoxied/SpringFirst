@@ -1,7 +1,9 @@
 package org.example.service.Impl;
 
-import co.elastic.clients.elasticsearch._types.aggregations.Aggregation;
-import co.elastic.clients.elasticsearch._types.aggregations.AggregationBuilders;
+import co.elastic.clients.elasticsearch._types.FieldValue;
+import co.elastic.clients.elasticsearch._types.SortOptionsBuilders;
+import co.elastic.clients.elasticsearch._types.SortOrder;
+import co.elastic.clients.elasticsearch._types.aggregations.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.cache.RabbitListener;
@@ -9,6 +11,7 @@ import org.example.converter.DetailConverter;
 import org.example.dao.DetailRepository;
 import org.example.dao.ValueRepository;
 import org.example.dao.ext.DetailExt;
+import org.example.dao.ext.DetailResultExt;
 import org.example.dao.ext.DetailUpdate;
 import org.example.entity.AttributeValue;
 import org.example.entity.Detail;
@@ -19,15 +22,16 @@ import org.example.search.repo.SearchDetailRepo;
 import org.example.service.DetailRestService;
 import org.example.service.PersistenceService;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.elasticsearch.client.elc.ElasticsearchAggregation;
+import org.springframework.data.elasticsearch.client.elc.ElasticsearchAggregations;
 import org.springframework.data.elasticsearch.client.elc.NativeQuery;
 import org.springframework.data.elasticsearch.client.elc.NativeQueryBuilder;
+import org.springframework.data.elasticsearch.core.AggregationsContainer;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
-import org.springframework.data.elasticsearch.core.query.Order;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,13 +47,16 @@ public class DetailRestServiceImpl implements DetailRestService {
 
     private final DetailRepository detailRepository;
     private final ValueRepository valueRepository;
+
     private final RabbitTemplate rabbitTemplate;
+
     private final SearchDetailRepo searchDetailRepo;
     private final ElasticsearchOperations elasticsearchOperations;
+
     private final PersistenceService persistenceService;
 
     @Override
-    public List<DetailExt> getDetails(String name) {
+    public DetailResultExt getDetails(String name) {
         DetailConverter detailConverter = new DetailConverter();
         NativeQueryBuilder builder = new NativeQueryBuilder();
         SearchHits<SearchDetailDto> searchHits;
@@ -57,14 +64,22 @@ public class DetailRestServiceImpl implements DetailRestService {
         Aggregation aggregation = AggregationBuilders.terms(ta->ta.field("brand"));
 
         if (name != null){
-            nativeQuery = builder.withQuery(q->q.match(m->m.field("name").query(name)))
-                    .withAggregation("b", aggregation).build();
+            nativeQuery = builder.withQuery(q -> q.match(m -> m.field("name").query(name)))
+                    .withAggregation("b", aggregation)
+                    .withSort(Sort.by(Sort.Order.by("_score"))).build();
         }
         else {
             nativeQuery = builder.withQuery(q->q.bool(b->b)).withAggregation("b", aggregation).build();
         }
+
         searchHits = elasticsearchOperations.search(nativeQuery, SearchDetailDto.class);
-        return detailConverter.dtoToDetailExt(searchHits.getSearchHits().stream().map(SearchHit::getContent).toList());
+
+        ElasticsearchAggregations aggs = (ElasticsearchAggregations) searchHits.getAggregations();
+        ElasticsearchAggregation aggsBrand = aggs.get("b");
+        StringTermsAggregate brandTerms = aggsBrand.aggregation().getAggregate().sterms();
+        Buckets<StringTermsBucket> brandBuckets = brandTerms.buckets();
+
+        return detailConverter.dtoToDetailExt(searchHits.getSearchHits().stream().map(SearchHit::getContent).toList(), brandBuckets);
     }
 
     @Override

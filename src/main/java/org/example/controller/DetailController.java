@@ -5,6 +5,7 @@ import io.opentracing.Tracer;
 import lombok.RequiredArgsConstructor;
 import org.example.csv.DetailCsvReader;
 import org.example.dao.ext.DetailExt;
+import org.example.dao.ext.DetailResultExt;
 import org.example.dao.ext.DetailUpdate;
 import org.example.entity.Detail;
 import org.example.entity.ext.DetailList;
@@ -30,7 +31,7 @@ public class DetailController {
 
 
     @GetMapping(value = "details",produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<DetailExt> details(@RequestParam(name = "name", required = false) String name){
+    public DetailResultExt details(@RequestParam(name = "name", required = false) String name){
         return detailRestService.getDetails(name);
     }
 
@@ -45,7 +46,9 @@ public class DetailController {
     }
 
     @PostMapping(value = "csv", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public void importCSV(@RequestPart("file") MultipartFile file) throws IOException {detailCsvReader.read(file.getInputStream());}
+    public void importCSV(@RequestPart("file") MultipartFile file) throws IOException {
+        detailCsvReader.read(file.getInputStream());
+    }
 
     @PostMapping(value = "csvValues", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public void importCSVAttrValues(@RequestPart("file") MultipartFile file) throws IOException {
