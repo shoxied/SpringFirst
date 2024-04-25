@@ -1,16 +1,14 @@
 package org.example.service.Impl;
 
-import co.elastic.clients.elasticsearch._types.FieldValue;
-import co.elastic.clients.elasticsearch._types.SortOptionsBuilders;
-import co.elastic.clients.elasticsearch._types.SortOrder;
 import co.elastic.clients.elasticsearch._types.aggregations.*;
+import co.elastic.clients.elasticsearch._types.query_dsl.Query;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.example.cache.RabbitListener;
 import org.example.converter.DetailConverter;
 import org.example.dao.DetailRepository;
 import org.example.dao.ValueRepository;
-import org.example.dao.ext.DetailExt;
 import org.example.dao.ext.DetailResultExt;
 import org.example.dao.ext.DetailUpdate;
 import org.example.entity.AttributeValue;
@@ -22,13 +20,12 @@ import org.example.search.repo.SearchDetailRepo;
 import org.example.service.DetailRestService;
 import org.example.service.PersistenceService;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.client.elc.ElasticsearchAggregation;
 import org.springframework.data.elasticsearch.client.elc.ElasticsearchAggregations;
 import org.springframework.data.elasticsearch.client.elc.NativeQuery;
 import org.springframework.data.elasticsearch.client.elc.NativeQueryBuilder;
-import org.springframework.data.elasticsearch.core.AggregationsContainer;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
@@ -56,30 +53,51 @@ public class DetailRestServiceImpl implements DetailRestService {
     private final PersistenceService persistenceService;
 
     @Override
-    public DetailResultExt getDetails(String name) {
+    public DetailResultExt getDetails(String name, String brand, Integer page) {
         DetailConverter detailConverter = new DetailConverter();
         NativeQueryBuilder builder = new NativeQueryBuilder();
         SearchHits<SearchDetailDto> searchHits;
         NativeQuery nativeQuery;
         Aggregation aggregation = AggregationBuilders.terms(ta->ta.field("brand"));
 
-        if (name != null){
-            nativeQuery = builder.withQuery(q -> q.match(m -> m.field("name").query(name)))
-                    .withAggregation("b", aggregation)
-                    .withSort(Sort.by(Sort.Order.by("_score"))).build();
+        int totalPages;
+
+        if(page == null){
+            page = 1;
         }
-        else {
-            nativeQuery = builder.withQuery(q->q.bool(b->b)).withAggregation("b", aggregation).build();
-        }
+
+        nativeQuery = builder.withQuery(q -> q.bool(bool -> {
+                    bool.must(must -> {
+                        if (StringUtils.isNotBlank(name)) {
+                            must.match(m -> m.field("name").query(name));
+                        } else {
+                            must.matchAll(m -> m);
+                        }
+                        return must;
+                    });
+                    return bool;
+                }))
+                .withAggregation("b", aggregation)
+                .withFilter(f -> f.bool(bool -> {
+                    if (StringUtils.isNotBlank(brand)) {
+                        bool.filter(fBrand -> fBrand.term(t -> t.field("brand").value(brand)));
+                    }
+                    return bool;
+                }))
+                .withSort(Sort.by(Sort.Order.by("_score")))
+                .withPageable(PageRequest.of(page - 1, 3))
+                .build();
 
         searchHits = elasticsearchOperations.search(nativeQuery, SearchDetailDto.class);
 
-        ElasticsearchAggregations aggs = (ElasticsearchAggregations) searchHits.getAggregations();
+        ElasticsearchAggregations aggs = (ElasticsearchAggregations)searchHits.getAggregations();
         ElasticsearchAggregation aggsBrand = aggs.get("b");
         StringTermsAggregate brandTerms = aggsBrand.aggregation().getAggregate().sterms();
         Buckets<StringTermsBucket> brandBuckets = brandTerms.buckets();
 
-        return detailConverter.dtoToDetailExt(searchHits.getSearchHits().stream().map(SearchHit::getContent).toList(), brandBuckets);
+        totalPages = (int) Math.ceil((double)searchHits.getTotalHits() / 3.0);
+
+        return detailConverter.dto2DetailResultExt(searchHits.getSearchHits().stream().map(SearchHit::getContent).toList(), brandBuckets, searchHits.getTotalHits(), totalPages, page);
     }
 
     @Override

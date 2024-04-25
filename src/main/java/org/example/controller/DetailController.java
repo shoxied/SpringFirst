@@ -31,8 +31,10 @@ public class DetailController {
 
 
     @GetMapping(value = "details",produces = MediaType.APPLICATION_JSON_VALUE)
-    public DetailResultExt details(@RequestParam(name = "name", required = false) String name){
-        return detailRestService.getDetails(name);
+    public DetailResultExt details(@RequestParam(name = "name", required = false)String name,
+                                   @RequestParam(name = "brand", required = false)String brand,
+                                   @RequestParam(name = "page", required = false)Integer page){
+        return detailRestService.getDetails(name, brand, page);
     }
 
     @PostMapping(value = "newDetail",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)

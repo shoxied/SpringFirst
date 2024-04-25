@@ -72,7 +72,8 @@ public class DetailCsvReaderImpl implements DetailCsvReader {
             List<Integer> attributeValues = new ArrayList<>();
             if (a.size() > 3) {
                 for (int s = 3; s < a.size() - 1; s++){
-                    Attribute attribute = new Attribute();
+                    new Attribute();
+                    Attribute attribute;
                     attribute = attributeRepository.findByName(a.get(s));
                     for (Value value: attribute.getValues()){
                         if(Objects.equals(value.getValue(), a.get(s + 1))){

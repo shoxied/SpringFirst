@@ -1,31 +1,21 @@
 package org.example.converter;
 
-import co.elastic.clients.elasticsearch._types.FieldValue;
 import co.elastic.clients.elasticsearch._types.aggregations.Buckets;
 import co.elastic.clients.elasticsearch._types.aggregations.StringTermsBucket;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.example.dao.ext.DetailExt;
 import org.example.dao.ext.DetailExtValues;
 import org.example.dao.ext.DetailResultExt;
 import org.example.search.dto.SearchDetailDto;
 import org.example.search.dto.SearchDetailValueDto;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.springframework.data.elasticsearch.client.elc.ElasticsearchAggregations;
 
-import java.awt.*;
 import java.util.*;
 import java.util.List;
 
 @Slf4j
 public class DetailConverter {
 
-    public DetailResultExt dtoToDetailExt(List<SearchDetailDto> searchDetailDtos, Buckets<StringTermsBucket> brandBuckets){
+    public DetailResultExt dto2DetailResultExt(List<SearchDetailDto> searchDetailDtos, Buckets<StringTermsBucket> brandBuckets, long total, Integer totalPages, Integer page){
 
         DetailResultExt result = new DetailResultExt();
 
@@ -52,9 +42,11 @@ public class DetailConverter {
             detailExtList.add(detailExt);
         }
 
-        result.setTotal(detailExtList.size());
+        result.setTotal(total);
         result.setDetails(detailExtList);
         result.setBrands(brands);
+        result.setPage(page);
+        result.setTotalPages(totalPages);
 
         return result;
     }
