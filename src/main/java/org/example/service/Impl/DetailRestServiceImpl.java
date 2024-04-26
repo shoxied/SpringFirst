@@ -1,7 +1,6 @@
 package org.example.service.Impl;
 
 import co.elastic.clients.elasticsearch._types.aggregations.*;
-import co.elastic.clients.elasticsearch._types.query_dsl.Query;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -35,6 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.StreamSupport;
 
 @Service
@@ -52,16 +52,20 @@ public class DetailRestServiceImpl implements DetailRestService {
 
     private final PersistenceService persistenceService;
 
+    private final DetailConverter detailConverter;
+
     @Override
     public DetailResultExt getDetails(String name, String brand, Integer page) {
-        DetailConverter detailConverter = new DetailConverter();
         NativeQueryBuilder builder = new NativeQueryBuilder();
         SearchHits<SearchDetailDto> searchHits;
         NativeQuery nativeQuery;
-        Aggregation aggregation = AggregationBuilders.terms(ta->ta.field("brand"));
+        Aggregation aggregationBrand = AggregationBuilders.terms(ta->ta.field("brand"));
+
+        Aggregation sub = new Aggregation.Builder().terms(ta -> ta.field("attributes.value_id")).build();
+        Aggregation aggregationAttr = new Aggregation.Builder().nested(n -> n.path("attributes"))
+                .aggregations(Map.of("value_ids", sub)).build();
 
         int totalPages;
-
         if(page == null){
             page = 1;
         }
@@ -77,7 +81,8 @@ public class DetailRestServiceImpl implements DetailRestService {
                     });
                     return bool;
                 }))
-                .withAggregation("b", aggregation)
+                .withAggregation("brands", aggregationBrand)
+                .withAggregation("attributes", aggregationAttr)
                 .withFilter(f -> f.bool(bool -> {
                     if (StringUtils.isNotBlank(brand)) {
                         bool.filter(fBrand -> fBrand.term(t -> t.field("brand").value(brand)));
@@ -85,19 +90,31 @@ public class DetailRestServiceImpl implements DetailRestService {
                     return bool;
                 }))
                 .withSort(Sort.by(Sort.Order.by("_score")))
-                .withPageable(PageRequest.of(page - 1, 3))
+                .withPageable(PageRequest.of(page - 1, 4))
                 .build();
 
         searchHits = elasticsearchOperations.search(nativeQuery, SearchDetailDto.class);
 
         ElasticsearchAggregations aggs = (ElasticsearchAggregations)searchHits.getAggregations();
-        ElasticsearchAggregation aggsBrand = aggs.get("b");
+        ElasticsearchAggregation aggsBrand = aggs.get("brands");
+
         StringTermsAggregate brandTerms = aggsBrand.aggregation().getAggregate().sterms();
+
         Buckets<StringTermsBucket> brandBuckets = brandTerms.buckets();
 
-        totalPages = (int) Math.ceil((double)searchHits.getTotalHits() / 3.0);
+        ElasticsearchAggregation aggsAttr = aggs.get("attributes");
+        NestedAggregate attrTerms = aggsAttr.aggregation().getAggregate().nested();
+        LongTermsAggregate lAttrTerms = attrTerms.aggregations().get("value_ids").lterms();
+        Buckets<LongTermsBucket> attrBuckets = lAttrTerms.buckets();
 
-        return detailConverter.dto2DetailResultExt(searchHits.getSearchHits().stream().map(SearchHit::getContent).toList(), brandBuckets, searchHits.getTotalHits(), totalPages, page);
+        totalPages = (int)Math.ceil((double)searchHits.getTotalHits() / 4.0);
+        return detailConverter.dto2DetailResultExt(
+                searchHits.getSearchHits().stream().map(SearchHit::getContent).toList(),
+                brandBuckets,
+                attrBuckets,
+                searchHits.getTotalHits(),
+                totalPages,
+                page);
     }
 
     @Override

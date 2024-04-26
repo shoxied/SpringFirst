@@ -1,26 +1,39 @@
 package org.example.converter;
 
 import co.elastic.clients.elasticsearch._types.aggregations.Buckets;
+import co.elastic.clients.elasticsearch._types.aggregations.LongTermsBucket;
 import co.elastic.clients.elasticsearch._types.aggregations.StringTermsBucket;
-import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
 import org.example.dao.ext.DetailExt;
 import org.example.dao.ext.DetailExtValues;
 import org.example.dao.ext.DetailResultExt;
+import org.example.dao.ext.DetailResultExtValues;
 import org.example.search.dto.SearchDetailDto;
 import org.example.search.dto.SearchDetailValueDto;
+import org.example.service.DetailTypeService;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
 import java.util.List;
 
-@Slf4j
+@Component
+@RequiredArgsConstructor
 public class DetailConverter {
 
-    public DetailResultExt dto2DetailResultExt(List<SearchDetailDto> searchDetailDtos, Buckets<StringTermsBucket> brandBuckets, long total, Integer totalPages, Integer page){
+    private final DetailTypeService detailTypeService;
+
+    public DetailResultExt dto2DetailResultExt(List<SearchDetailDto> searchDetailDtos,
+                                                      Buckets<StringTermsBucket> brandBuckets,
+                                                      Buckets<LongTermsBucket> attrBuckets,
+                                                      long total,
+                                                      Integer totalPages,
+                                                      Integer page){
 
         DetailResultExt result = new DetailResultExt();
 
         List<DetailExt> detailExtList = new ArrayList<>();
-        Map<String, Long> brands = aggregations(brandBuckets);
+        Map<String, Long> brands = brandBuckets2Map(brandBuckets);
+        List<DetailResultExtValues> values = attrBuckets2Map(attrBuckets);
 
         for (SearchDetailDto detailDto: searchDetailDtos){
             DetailExt detailExt = new DetailExt();
@@ -47,11 +60,12 @@ public class DetailConverter {
         result.setBrands(brands);
         result.setPage(page);
         result.setTotalPages(totalPages);
+        result.setValues(values);
 
         return result;
     }
 
-    private Map<String, Long> aggregations (Buckets<StringTermsBucket> brandBuckets){
+    private Map<String, Long> brandBuckets2Map (Buckets<StringTermsBucket> brandBuckets){
 
         Map<String, Long> brands = new HashMap<>();
 
@@ -61,5 +75,19 @@ public class DetailConverter {
             brands.put(key, docCount);
         }
         return brands;
+    }
+
+    private List<DetailResultExtValues> attrBuckets2Map(Buckets<LongTermsBucket> attrBuckets){
+
+        List<DetailResultExtValues> values = new ArrayList<>();
+
+        for (LongTermsBucket bucket: attrBuckets.array()){
+            int id = Math.toIntExact(bucket.key());
+            DetailResultExtValues resultExtValues = detailTypeService.findDetailTypeById(id);
+            resultExtValues.setCount(bucket.docCount());
+            values.add(resultExtValues);
+        }
+
+        return  values;
     }
 }

@@ -16,4 +16,5 @@ public class DetailResultExt {
     private Integer page;
     private List<DetailExt> details;
     private Map<String, Long> brands;
+    private List<DetailResultExtValues> values;
 }
