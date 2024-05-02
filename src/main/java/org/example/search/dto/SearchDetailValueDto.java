@@ -25,5 +25,4 @@ public class SearchDetailValueDto {
 
     @Field(name="string_value", type = FieldType.Keyword)
     private String value;
-
 }

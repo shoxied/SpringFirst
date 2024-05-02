@@ -47,3 +47,4 @@ class RabbitListenerTest {
         assertEquals("brand", saved.getBrand());
     }
 }
+

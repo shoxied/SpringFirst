@@ -19,7 +19,7 @@ public class DetailTypeServiceImpl implements DetailTypeService {
     private final ValueRepository valueRepository;
 
     @Override
-    @Cacheable(value = "codetable")
+    @Cacheable(value = "values")
     public DetailResultExtValues findDetailTypeById(int id) {
 
         DetailResultExtValues resultValue = new DetailResultExtValues();

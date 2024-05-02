@@ -1,5 +1,6 @@
 package org.example.service.Impl;
 
+import co.elastic.clients.elasticsearch._types.FieldValue;
 import co.elastic.clients.elasticsearch._types.aggregations.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +10,7 @@ import org.example.converter.DetailConverter;
 import org.example.dao.DetailRepository;
 import org.example.dao.ValueRepository;
 import org.example.dao.ext.DetailResultExt;
+import org.example.dao.ext.DetailResultExtValues;
 import org.example.dao.ext.DetailUpdate;
 import org.example.entity.AttributeValue;
 import org.example.entity.Detail;
@@ -55,7 +57,7 @@ public class DetailRestServiceImpl implements DetailRestService {
     private final DetailConverter detailConverter;
 
     @Override
-    public DetailResultExt getDetails(String name, String brand, Integer page) {
+    public DetailResultExt getDetails(String name, String brand, Integer valueId, Integer page) {
         NativeQueryBuilder builder = new NativeQueryBuilder();
         SearchHits<SearchDetailDto> searchHits;
         NativeQuery nativeQuery;
@@ -86,6 +88,10 @@ public class DetailRestServiceImpl implements DetailRestService {
                 .withFilter(f -> f.bool(bool -> {
                     if (StringUtils.isNotBlank(brand)) {
                         bool.filter(fBrand -> fBrand.term(t -> t.field("brand").value(brand)));
+                    }
+                    if (valueId != null) {
+                        bool.filter(fNested -> fNested.nested(bNested -> bNested.path("attributes")
+                                .query(qNested -> qNested.term(tNest -> tNest.field("attributes.value_id").value(valueId)))));
                     }
                     return bool;
                 }))

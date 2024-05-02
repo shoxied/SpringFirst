@@ -12,7 +12,7 @@ import java.util.Set;
 
 public interface DetailRestService {
 
-    DetailResultExt getDetails(String name, String brand, Integer page);
+    DetailResultExt getDetails(String name, String brand, Integer valueId, Integer page);
 
     Detail addDetail(DetailUpdate update);
 
