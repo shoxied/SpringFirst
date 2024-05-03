@@ -36,39 +36,16 @@ public class DetailRestServiceImplTest {
     @Mock
     private DetailRepository detailRepository;
     @Mock
-    private ValueRepository valueRepository;
-    @Mock
     private SearchDetailRepo searchDetailRepo;
 
     @Mock
     private RabbitTemplate rabbitTemplate;
+
     @Mock
-    private RabbitListener rabbitListener;
+    private PersistenceService persistenceService;
 
     @InjectMocks
     private DetailRestServiceImpl detailRestService;
-
-    @Test
-    void addNewDetail_save(){
-        DetailUpdate detailUpdate = new DetailUpdate();
-        detailUpdate.setName("name");
-        detailUpdate.setOem("oem");
-        detailUpdate.setBrand("brand");
-        Detail expected = new Detail();
-
-        when(detailRepository.save(any())).thenReturn(expected);
-
-        Detail actual = detailRestService.addDetail(detailUpdate);
-
-        assertSame(expected, actual);
-
-        ArgumentCaptor<Detail> detailCaptor = ArgumentCaptor.forClass(Detail.class);
-        verify(detailRepository).save(detailCaptor.capture());
-        Detail savedDetail = detailCaptor.getValue();
-        assertEquals("name", savedDetail.getName());
-        assertEquals("oem", savedDetail.getOem());
-        assertEquals("brand", savedDetail.getBrand());
-    }
 
     @Test
     void addNewDetails(){
@@ -76,6 +53,7 @@ public class DetailRestServiceImplTest {
         detailUpdate1.setName("name1");
         detailUpdate1.setOem("oem1");
         detailUpdate1.setBrand("brand1");
+
         Detail expected1 = new Detail();
         expected1.setId(1);
 
@@ -83,6 +61,7 @@ public class DetailRestServiceImplTest {
         detailUpdate2.setName("name2");
         detailUpdate2.setOem("oem2");
         detailUpdate2.setBrand("brand2");
+
         Detail expected2 = new Detail();
         expected2.setId(2);
 
@@ -113,20 +92,12 @@ public class DetailRestServiceImplTest {
     @Test
     void addNewDetail_attribute(){
         DetailUpdate detailUpdate = new DetailUpdate();
-        detailUpdate.setValues(List.of(10, 11));
-
-        Value val10 = new Value();
-        when(valueRepository.findById(10)).thenReturn(Optional.of(val10));
-
-        Value val11 = new Value();
-        when(valueRepository.findById(11)).thenReturn(Optional.of(val11));
 
         Detail detail = new Detail();
-        when(detailRepository.save(any())).thenReturn(detail);
+        when(persistenceService.saveDetail(any())).thenReturn(detail);
 
         detailRestService.addDetail(detailUpdate);
 
         verify(rabbitTemplate).convertAndSend(RabbitListener.EXCHANGE, RabbitListener.ROUTING_KEY, 0);
-        verify(valueRepository, times(2)).findById(any());
     }
 }

@@ -23,18 +23,18 @@ services:
       - POSTGRES_DB=gcs3
     ports:
       - 5432:5432
-#  myfirstspring:
-#    image: myfirstspring:1.0.0
-#    container_name: myservice
-#    build:
-#      context: .
-#      dockerfile: Dockerfile
-#    restart: always
-#    ports:
-#      - 8080:8080
-#    environment:
-#      - spring.datasource.url=jdbc:postgresql://10.54.2.27:5432/gcs3
-#      - spring.elasticsearch.uris=http://10.54.2.27:9200
+  myfirstspring:
+    image: myfirstspring:1.0.0
+    container_name: myservice
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - 8080:8080
+    environment:
+      - spring.datasource.url=jdbc:postgresql://10.54.2.27:5432/gcs3
+      - spring.elasticsearch.uris=http://10.54.2.27:9200
   jaeger:
     container_name: jaeger
     image: jaegertracing/all-in-one:1.52.0

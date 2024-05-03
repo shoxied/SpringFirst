@@ -20,6 +20,7 @@ import org.example.search.dto.SearchDetailValueDto;
 import org.example.search.repo.SearchDetailRepo;
 import org.example.service.DetailRestService;
 import org.example.service.PersistenceService;
+import org.example.service.SearchService;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -46,60 +47,23 @@ public class DetailRestServiceImpl implements DetailRestService {
 
     private final DetailRepository detailRepository;
     private final ValueRepository valueRepository;
+    private final SearchDetailRepo searchDetailRepo;
 
     private final RabbitTemplate rabbitTemplate;
 
-    private final SearchDetailRepo searchDetailRepo;
-    private final ElasticsearchOperations elasticsearchOperations;
-
     private final PersistenceService persistenceService;
+    private final SearchService searchService;
 
     private final DetailConverter detailConverter;
 
     @Override
     public DetailResultExt getDetails(String name, String brand, Integer valueId, Integer page) {
-        NativeQueryBuilder builder = new NativeQueryBuilder();
-        SearchHits<SearchDetailDto> searchHits;
-        NativeQuery nativeQuery;
-        Aggregation aggregationBrand = AggregationBuilders.terms(ta->ta.field("brand"));
 
-        Aggregation sub = new Aggregation.Builder().terms(ta -> ta.field("attributes.value_id")).build();
-        Aggregation aggregationAttr = new Aggregation.Builder().nested(n -> n.path("attributes"))
-                .aggregations(Map.of("value_ids", sub)).build();
+        SearchHits<SearchDetailDto> searchHits = searchService.getDetails(name, brand, valueId, page);
 
-        int totalPages;
         if(page == null){
             page = 1;
         }
-
-        nativeQuery = builder.withQuery(q -> q.bool(bool -> {
-                    bool.must(must -> {
-                        if (StringUtils.isNotBlank(name)) {
-                            must.match(m -> m.field("name").query(name));
-                        } else {
-                            must.matchAll(m -> m);
-                        }
-                        return must;
-                    });
-                    return bool;
-                }))
-                .withAggregation("brands", aggregationBrand)
-                .withAggregation("attributes", aggregationAttr)
-                .withFilter(f -> f.bool(bool -> {
-                    if (StringUtils.isNotBlank(brand)) {
-                        bool.filter(fBrand -> fBrand.term(t -> t.field("brand").value(brand)));
-                    }
-                    if (valueId != null) {
-                        bool.filter(fNested -> fNested.nested(bNested -> bNested.path("attributes")
-                                .query(qNested -> qNested.term(tNest -> tNest.field("attributes.value_id").value(valueId)))));
-                    }
-                    return bool;
-                }))
-                .withSort(Sort.by(Sort.Order.by("_score")))
-                .withPageable(PageRequest.of(page - 1, 4))
-                .build();
-
-        searchHits = elasticsearchOperations.search(nativeQuery, SearchDetailDto.class);
 
         ElasticsearchAggregations aggs = (ElasticsearchAggregations)searchHits.getAggregations();
         ElasticsearchAggregation aggsBrand = aggs.get("brands");
@@ -113,7 +77,7 @@ public class DetailRestServiceImpl implements DetailRestService {
         LongTermsAggregate lAttrTerms = attrTerms.aggregations().get("value_ids").lterms();
         Buckets<LongTermsBucket> attrBuckets = lAttrTerms.buckets();
 
-        totalPages = (int)Math.ceil((double)searchHits.getTotalHits() / 4.0);
+        int totalPages = (int)Math.ceil((double)searchHits.getTotalHits() / 4.0);
         return detailConverter.dto2DetailResultExt(
                 searchHits.getSearchHits().stream().map(SearchHit::getContent).toList(),
                 brandBuckets,

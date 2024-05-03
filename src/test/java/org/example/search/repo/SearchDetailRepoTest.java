@@ -54,18 +54,6 @@ class SearchDetailRepoTest {
     @Autowired
     private ElasticsearchOperations elasticsearchOperations;
 
-    private Integer startId;
-    private Integer detailId;
-    private Integer productTypeId;
-
-    @BeforeEach
-    void setUp() {
-        clean();
-        startId = Math.abs(random.nextInt()) / 1000;
-        detailId = startId;
-        productTypeId = startId + 100;
-    }
-
     @AfterEach
     void tearDown() {
         clean();
@@ -77,16 +65,16 @@ class SearchDetailRepoTest {
     }
 
     @Test
-    void saved_attribute() {
-        int id = detailId++;
+    void save_detail_with_attributeValue() {
+        int id = 1;
         searchDetailRepo.save(SearchDetailDto.builder()
                         .id(id)
                         .brand("brand")
                         .oem("oem")
                         .name("name")
                         .attributes(List.of(SearchDetailValueDto.builder()
-                                .id(startId)
-                                .attributeId(startId)
+                                .id(2)
+                                .attributeId(2)
                                 .attributeName("attrName")
                                 .value("value")
                                 .build()))
@@ -98,8 +86,8 @@ class SearchDetailRepoTest {
         assertEquals("oem", actual.getOem());
         assertEquals("name", actual.getName());
         SearchDetailValueDto valueDto = actual.getAttributes().iterator().next();
-        assertEquals(startId, valueDto.getId());
-        assertEquals(startId, valueDto.getAttributeId());
+        assertEquals(2, valueDto.getId());
+        assertEquals(2, valueDto.getAttributeId());
         assertEquals("attrName", valueDto.getAttributeName());
         assertEquals("value", valueDto.getValue());
 

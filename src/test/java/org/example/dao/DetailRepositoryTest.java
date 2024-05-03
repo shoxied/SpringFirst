@@ -59,4 +59,19 @@ class DetailRepositoryTest {
         assertEquals("oem", detail.getOem());
         assertEquals("1", detail.getAttributeValues().get(0).getValue().getValue());
     }
+
+    @Test
+    void find_by_brand(){
+        Detail detail = Detail.builder()
+                .brand("brand")
+                .oem("oem")
+                .name("name")
+                .build();
+        detailRepository.save(detail);
+
+        List<Detail> details = detailRepository.findByBrand("brand");
+        assertEquals("brand", details.get(0).getBrand());
+        assertEquals("oem", details.get(0).getOem());
+        assertEquals(1, details.get(0).getId());
+    }
 }

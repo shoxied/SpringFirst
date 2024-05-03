@@ -1,4 +1,4 @@
-FROM openjdk:18.0.2.1
+FROM openjdk:22.0.1
 
 ARG VERSION=$VERSION
 ENV jarFile=SpringFirst-$VERSION.jar
