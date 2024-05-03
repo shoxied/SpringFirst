@@ -11,9 +11,11 @@ import java.util.Map;
 @Setter
 @Builder(toBuilder = true)
 public class DetailResultExt {
+
     private long total;
     private Integer totalPages;
     private Integer page;
+
     private List<DetailExt> details;
     private Map<String, Long> brands;
     private List<DetailResultExtValues> values;

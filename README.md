@@ -15,13 +15,13 @@
 
 <h4>Документация</h4>
 <h6>swagger</h6>
-<a href="http://localhost:8188/swagger-ui.html/">
+<a href="http://localhost:8080/swagger-ui.html/">
 http://localhost:8080/swagger-ui/index.html
 
 <h4>Дистрибутивы</h4>
 <h6>Java</h6>
-<a href="https://jdk.java.net/18">
-https://jdk.java.net/18
+<a href="https://jdk.java.net/22/">
+https://jdk.java.net/22/
 </a>
 <h6>Maven</h6>
 <a href="https://maven.apache.org/download.cgi">

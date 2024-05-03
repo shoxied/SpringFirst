@@ -12,6 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 @EqualsAndHashCode
+@Builder
 public class DetailUpdate {
 
     private String brand;
